@@ -1,6 +1,7 @@
 package com.alcshare.docs;
 
 import au.com.bytecode.opencsv.CSVReader;
+import com.controlj.green.addonsupport.InvalidConnectionRequestException;
 import com.controlj.green.addonsupport.access.*;
 import com.controlj.green.addonsupport.web.WebContext;
 import com.controlj.green.addonsupport.web.WebContextFactory;
@@ -91,18 +92,25 @@ public enum DocumentManager {
         }
     }
 
-    public List<DocumentReference> getReferences(SystemAccess access, HttpServletRequest request) {
-        List<DocumentReference> result = Collections.emptyList();
-        try {
-            if (WebContextFactory.hasLinkedWebContext(request)) {
-                WebContext context = WebContextFactory.getLinkedWebContext(request);
-                Location location = context.getLinkedFromLocation(access.getTree(SystemTree.Geographic));
+    public List<DocumentReference> getReferences(final HttpServletRequest request) throws SystemException, ActionExecutionException, InvalidConnectionRequestException {
+        SystemConnection connection = DirectAccess.getDirectAccess().getUserSystemConnection(request);
 
-                result = getReferencesForLocation(location.getPersistentLookupString(true), docRefs);
+        return connection.runReadAction(new ReadActionResult<List<DocumentReference>>() {
+            @Override
+            public List<DocumentReference> execute(@NotNull SystemAccess access) throws Exception {
+                List<DocumentReference> result = Collections.emptyList();
+                try {
+                    if (WebContextFactory.hasLinkedWebContext(request)) {
+                        WebContext context = WebContextFactory.getLinkedWebContext(request);
+                        Location location = context.getLinkedFromLocation(access.getTree(SystemTree.Geographic));
+
+                        result = getReferencesForLocation(location.getPersistentLookupString(true), docRefs);
+                    }
+                } catch (UnresolvableException e) {  } // ignore and return empty list
+
+                return result;
             }
-        } catch (UnresolvableException e) {  } // ignore and return empty list
-
-        return result;
+        });
     }
 
     private static List<DocumentReference> getReferencesForLocation(String locationString, HashMap<String,List<DocumentReference>> docRefs) {
