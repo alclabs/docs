@@ -14,6 +14,7 @@ info {
 
 dependencies {
    compile 'net.sf.opencsv:opencsv:2.0'
+   compile 'commons-io:commons-io:2.4'
 
    providedCompile 'com.controlj.green:addonsupport-api-addon:1.2.0'
    providedCompile 'com.controlj.green:directaccess-api-addon:1.2.0'

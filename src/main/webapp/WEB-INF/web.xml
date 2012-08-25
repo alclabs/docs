@@ -31,13 +31,23 @@
     </listener>
 
     <servlet>
-        <servlet-name>MainContent</servlet-name>
+        <servlet-name>IncludeContent</servlet-name>
         <jsp-file>content.jsp</jsp-file>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>MainContent</servlet-name>
+        <servlet-name>IncludeContent</servlet-name>
         <url-pattern>/include_content</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>DocumentServlet</servlet-name>
+        <servlet-class>com.alcshare.docs.DocumentServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DocumentServlet</servlet-name>
+        <url-pattern>/content</url-pattern>
     </servlet-mapping>
 
 

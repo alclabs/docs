@@ -19,7 +19,7 @@ public class DocumentReference
     private Location location;
 
     // todo - figure out where we really want this and don't hard code it
-    private static String DOC_BASE_URL;
+    private static final String DOC_BASE_URL = "/"+AddOnInfo.getAddOnInfo().getName()+"/content";
 
     // todo - field for specifying order of documents
     // todo - type and user specified columns
@@ -28,7 +28,7 @@ public class DocumentReference
     public DocumentReference(String gqlPath, String title, String docPath, Location location) {
         this.gqlPath = gqlPath;
         this.title = title;
-        this.docPath = docPath;
+        this.docPath = getNormalizedDocPath(docPath);
         this.location = location;
     }
 
@@ -47,25 +47,16 @@ public class DocumentReference
         return docPath;
     }
 
-    //todo - this needs to find another home
-    public String getDocURL() {
-        if (DOC_BASE_URL == null) {
-            AddOnInfo aoi = AddOnInfo.getAddOnInfo();
-            File publicFile = aoi.getPublicDir();
-            String name = aoi.getName();
-            File systemFile = publicFile.getParentFile().getParentFile();
-            String systemName = systemFile.getName();
-            String relPath = systemName+"/webapp_data/"+name+"/private/docs/";
-            File docBaseFile = new File(systemFile, relPath);
-            docBaseFile.mkdirs();
-
-            DOC_BASE_URL = "/"+relPath;
-        }
-        return DOC_BASE_URL + docPath;
-    }
-
     public Location getLocation() {
         return location;
+    }
+
+    private String getNormalizedDocPath(String path) {
+        if (path.startsWith("/")) {
+            return path;
+        } else {
+            return "/" + path;
+        }
     }
 
 }
