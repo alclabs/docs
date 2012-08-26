@@ -48,11 +48,8 @@ public class AddOnFiles {
         File privateFile = addOnPrivateFile.get();
         if (privateFile == null) {
             AddOnInfo aoi = AddOnInfo.getAddOnInfo();
-            File publicFile = aoi.getPublicDir();
-            String name = aoi.getName();
-            File systemFile = publicFile.getParentFile().getParentFile();
-            String systemName = systemFile.getName();
-            String relPath = systemName+"/webapp_data/"+name+"/private";
+            File systemFile = aoi.getPublicDir().getParentFile().getParentFile();
+            String relPath = "webapp_data/"+aoi.getName()+"/private";
             privateFile = new File(systemFile, relPath);
             addOnPrivateFile.set(privateFile);
         }
