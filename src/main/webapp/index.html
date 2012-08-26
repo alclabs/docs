@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Docs Help</title>
+    <link rel="stylesheet" type="text/css" href="help/css/contentstyle.css"/>
+</head>
+<body>
+<h1>Docs - the Documentation Add-On</h1>
+<p>This add-on is intended to provide a simple mechanism to manage and display the documentation associated with
+a WebCTRL system.  There are numerous as-builts, network diagrams, and other documents that are associated with
+WebCTRL locations, but are awkward to attach as graphics.</p>
+
+<h3>Status:</h3>
+<p>This is a very early version of this add-on which, while functional, is really intended to get some real
+world feedback about the features needed to manage documents in a WebCTRL system.  It currently has no user
+interface and both the documents and their mapping to WebCTRL locations must be managed by manipulating files
+on the WebCTRL server.  If you do not have direct access to the file system of the WebCTRL server, we suggest
+that you use WebDAV to get access.  See WebCTRL help for more details.</p>
+
+<h2>Usage</h2>
+<img style="float:right;padding-left:2em;" src="help/img/vb_control.png"/>
+<p>
+    You display the documents associated with a location in WebCTRL using ViewBuilder's WebApp Content control.
+    Make the size of the control large enough to contain the longest list of documents you may wish to display.  The
+    exact format of the displayed content depends on the style parameter associated with the control.  If no style
+    is specified, the content is just a simple list of links to the associated documentation.  If you want to
+    format the content differently, you may create your own style templates (more on this later) and specify the
+    style to use with the "style" parameter as shown below.
+</p>
+<img style="float:left;padding-right:2em;" src="help/img/vb_properties.png"/>
+<p style="clear:both;">&nbsp;</p>
+<h2>Configuration</h2>
+<p>The <strong>docs</strong> add-on configuration and the documents to display are all contained inside your system
+    directory at <span class="examp"><span class="ital">system</span>/webapp_data/docs/private/</span>.  This directory
+    will be created when the add-on is first enabled.  This directory will have 3 important subdirectores:
+</p>
+<ul>
+    <li class="examp">config</li>
+    <li class="examp">docs</li>
+    <li class="examp">templates</li>
+</ul>
+<div class="indent">
+    <h3>config</h3>
+    <p>
+        The config directory contains the files that configure the add-on.  The most important of these is
+        <span class="examp">docs.csv</span>.  This is the file that enumerates the documents and the locations
+        where they are attached. It is a simple text file of comma separated values.  This file should be easy to
+        edit with a spreadsheet program like Excel.
+    </p>
+</div>
+</body>
+</html>
