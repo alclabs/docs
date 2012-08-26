@@ -1,17 +1,14 @@
-package com.alcshare.docs;
+package com.alcshare.docs.servlets;
 
+import com.alcshare.docs.DocumentManager;
 import com.alcshare.docs.util.AddOnFiles;
 import com.alcshare.docs.util.Logging;
-import com.controlj.green.addonsupport.AddOnInfo;
-import com.controlj.green.addonsupport.access.ActionExecutionException;
 import com.controlj.green.addonsupport.access.DirectAccess;
 import com.controlj.green.addonsupport.access.SystemConnection;
-import com.controlj.green.addonsupport.access.SystemException;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.io.File;
-import java.io.IOException;
 
 /**
  *
@@ -22,7 +19,7 @@ public class Startup implements ServletContextListener
     @Override
     public void contextInitialized(ServletContextEvent sce)
     {
-        File configFile = new File(AddOnFiles.getConfigBaseFile(), CONFIG_NAME);
+        File configFile = new File(AddOnFiles.getConfigDirectory(), CONFIG_NAME);
 
         if (!configFile.exists())
         {
@@ -35,7 +32,7 @@ public class Startup implements ServletContextListener
             Logging.println("Error parsing configuration file", e);
         }
 
-        AddOnFiles.getDocBaseFile();  // just to make sure the directory exists
+        AddOnFiles.getDocDirectory();  // just to make sure the directory exists
     }
 
     private void createDefaultConfig(File configFile)

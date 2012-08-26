@@ -1,0 +1,6 @@
+Test Velocity Template<br/>
+<div class="links">
+#foreach( $doc in $documents )
+    <div><a target="_blank" href="$doc.DocURL">$doc.Title</a></div>
+#end
+</div>

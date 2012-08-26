@@ -27,22 +27,23 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" >
 
     <listener>
-        <listener-class>com.alcshare.docs.Startup</listener-class>
+        <listener-class>com.alcshare.docs.servlets.Startup</listener-class>
     </listener>
 
     <servlet>
-        <servlet-name>IncludeContent</servlet-name>
-        <jsp-file>/content.jsp</jsp-file>
+        <servlet-name>ContentServlet</servlet-name>
+        <servlet-class>com.alcshare.docs.servlets.ContentServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>IncludeContent</servlet-name>
+        <servlet-name>ContentServlet</servlet-name>
         <url-pattern>/include_content</url-pattern>
     </servlet-mapping>
 
     <servlet>
         <servlet-name>DocumentServlet</servlet-name>
-        <servlet-class>com.alcshare.docs.DocumentServlet</servlet-class>
+        <servlet-class>com.alcshare.docs.servlets.DocumentServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>

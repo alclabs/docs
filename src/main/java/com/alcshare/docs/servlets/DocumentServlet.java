@@ -1,8 +1,7 @@
-package com.alcshare.docs;
+package com.alcshare.docs.servlets;
 
 import com.alcshare.docs.util.AddOnFiles;
 import com.alcshare.docs.util.Logging;
-import com.controlj.green.addonsupport.AddOnInfo;
 import org.apache.commons.io.IOUtils;
 
 import javax.servlet.ServletException;
@@ -28,6 +27,7 @@ public class DocumentServlet extends HttpServlet {
         try {
             ServletOutputStream outputStream = resp.getOutputStream();
             IOUtils.copy(new FileInputStream(docFile), outputStream);
+            outputStream.flush();
         } catch (IOException e) {
             Logging.println("Error copying file from '"+req.getPathInfo()+"'", e);
         }
@@ -57,7 +57,7 @@ public class DocumentServlet extends HttpServlet {
     }
 
     private static File getDocFile(String docPath) {
-        File docBaseFile = AddOnFiles.getDocBaseFile();
+        File docBaseFile = AddOnFiles.getDocDirectory();
         return new File(docBaseFile,docPath);
     }
 

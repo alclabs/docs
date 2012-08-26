@@ -1,6 +1,7 @@
 package com.alcshare.docs;
 
 import au.com.bytecode.opencsv.CSVReader;
+import com.alcshare.docs.util.Logging;
 import com.controlj.green.addonsupport.InvalidConnectionRequestException;
 import com.controlj.green.addonsupport.access.*;
 import com.controlj.green.addonsupport.web.WebContext;
@@ -92,25 +93,30 @@ public enum DocumentManager {
         }
     }
 
-    public List<DocumentReference> getReferences(final HttpServletRequest request) throws SystemException, ActionExecutionException, InvalidConnectionRequestException {
-        SystemConnection connection = DirectAccess.getDirectAccess().getUserSystemConnection(request);
+    public List<DocumentReference> getReferences(final HttpServletRequest request) {
+        try {
+            SystemConnection connection = DirectAccess.getDirectAccess().getUserSystemConnection(request);
 
-        return connection.runReadAction(new ReadActionResult<List<DocumentReference>>() {
-            @Override
-            public List<DocumentReference> execute(@NotNull SystemAccess access) throws Exception {
-                List<DocumentReference> result = Collections.emptyList();
-                try {
-                    if (WebContextFactory.hasLinkedWebContext(request)) {
-                        WebContext context = WebContextFactory.getLinkedWebContext(request);
-                        Location location = context.getLinkedFromLocation(access.getTree(SystemTree.Geographic));
+            return connection.runReadAction(new ReadActionResult<List<DocumentReference>>() {
+                @Override
+                public List<DocumentReference> execute(@NotNull SystemAccess access) throws Exception {
+                    List<DocumentReference> result = Collections.emptyList();
+                    try {
+                        if (WebContextFactory.hasLinkedWebContext(request)) {
+                            WebContext context = WebContextFactory.getLinkedWebContext(request);
+                            Location location = context.getLinkedFromLocation(access.getTree(SystemTree.Geographic));
 
-                        result = getReferencesForLocation(location.getPersistentLookupString(true), docRefs);
-                    }
-                } catch (UnresolvableException e) {  } // ignore and return empty list
+                            result = getReferencesForLocation(location.getPersistentLookupString(true), docRefs);
+                        }
+                    } catch (UnresolvableException e) {  } // ignore and return empty list
 
-                return result;
-            }
-        });
+                    return result;
+                }
+            });
+        } catch (Exception e) {
+            Logging.println("Error getting document references", e);
+            return Collections.emptyList();
+        }
     }
 
     private static List<DocumentReference> getReferencesForLocation(String locationString, HashMap<String,List<DocumentReference>> docRefs) {
