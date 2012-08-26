@@ -31,7 +31,7 @@ class DocumentManagerTest extends Specification {
         result != null
         access.resolveGQLPath("#ahu1") >> location
         location.getPersistentLookupString(true) >> "DBID:1:1492"
-        result.docPath == "one/two/three"
+        result.docPath == "/one/two/three"
         result.getGqlPath() == "#ahu1"
         result.title == "This is a test"
     }

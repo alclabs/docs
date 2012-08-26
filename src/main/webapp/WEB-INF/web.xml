@@ -32,7 +32,7 @@
 
     <servlet>
         <servlet-name>IncludeContent</servlet-name>
-        <jsp-file>content.jsp</jsp-file>
+        <jsp-file>/content.jsp</jsp-file>
     </servlet>
 
     <servlet-mapping>

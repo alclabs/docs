@@ -25,7 +25,7 @@ public class AddOnFiles {
             configBaseFile = new File(getAddOnPrivateFile(), "config");
             configBaseFile.mkdirs();
         }
-        return docBaseFile;
+        return configBaseFile;
     }
 
     public static File getAddOnPrivateFile() {
@@ -34,8 +34,7 @@ public class AddOnFiles {
             File publicFile = aoi.getPublicDir();
             String name = aoi.getName();
             File systemFile = publicFile.getParentFile().getParentFile();
-            String systemName = systemFile.getName();
-            String relPath = systemName+"/webapp_data/"+name+"/private";
+            String relPath = "webapp_data/"+name+"/private";
             addOnPrivateFile = new File(systemFile, relPath);
             addOnPrivateFile.mkdirs();
         }
