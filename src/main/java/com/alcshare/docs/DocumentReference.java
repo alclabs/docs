@@ -1,6 +1,9 @@
 package com.alcshare.docs;
 
+import com.controlj.green.addonsupport.AddOnInfo;
 import com.controlj.green.addonsupport.access.Location;
+
+import java.io.File;
 
 /**
  *
@@ -14,9 +17,7 @@ public class DocumentReference
     private String title;
     private String docPath;
     private Location location;
-
-    // todo - figure out where we really want this and don't hard code it
-    //private static final String DOC_BASE_URL = "/"+AddOnInfo.getAddOnInfo().getName()+"/content";
+    private static String ADDON_NAME;
 
     // todo - field for specifying order of documents
     // todo - type and user specified columns
@@ -42,6 +43,14 @@ public class DocumentReference
     public String getDocPath()
     {
         return docPath;
+    }
+
+
+    public String getDocURL() {
+        if (ADDON_NAME == null) {
+            ADDON_NAME = AddOnInfo.getAddOnInfo().getName();
+        }
+        return "/"+ADDON_NAME+"/content"+getDocPath();
     }
 
     public Location getLocation() {

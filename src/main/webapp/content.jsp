@@ -27,7 +27,7 @@ Nothing
 <%
         for (DocumentReference reference : references) {
 %>
-        <div><a href="<%= reference.getDocURL()%>"><%= reference.getTitle() %></a></div>
+        <div><a target="_blank" href="<%= reference.getDocURL()%>"><%= reference.getTitle() %></a></div>
 <%
         }
 %>
