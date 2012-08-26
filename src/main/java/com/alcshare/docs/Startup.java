@@ -1,5 +1,6 @@
 package com.alcshare.docs;
 
+import com.alcshare.docs.util.AddOnFiles;
 import com.controlj.green.addonsupport.AddOnInfo;
 import com.controlj.green.addonsupport.access.DirectAccess;
 import com.controlj.green.addonsupport.access.SystemConnection;
@@ -17,8 +18,7 @@ public class Startup implements ServletContextListener
     @Override
     public void contextInitialized(ServletContextEvent sce)
     {
-        File publicDir = AddOnInfo.getAddOnInfo().getPublicDir();
-        File configFile = new File(publicDir, CONFIG_NAME);
+        File configFile = new File(AddOnFiles.getConfigBaseFile(), CONFIG_NAME);
 
         if (!configFile.exists())
         {

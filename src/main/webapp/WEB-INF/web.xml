@@ -47,7 +47,7 @@
 
     <servlet-mapping>
         <servlet-name>DocumentServlet</servlet-name>
-        <url-pattern>/content</url-pattern>
+        <url-pattern>/content/*</url-pattern>
     </servlet-mapping>
 
 

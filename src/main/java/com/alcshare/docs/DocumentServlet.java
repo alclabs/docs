@@ -1,5 +1,7 @@
 package com.alcshare.docs;
 
+import com.alcshare.docs.util.AddOnFiles;
+import com.alcshare.docs.util.Logging;
 import com.controlj.green.addonsupport.AddOnInfo;
 import org.apache.commons.io.IOUtils;
 
@@ -16,31 +18,19 @@ import java.io.IOException;
  *
  */
 public class DocumentServlet extends HttpServlet {
-    private static File docBaseFile;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
         File docFile = getDocFile(req.getPathInfo());
         String mime = getMimeType(getExtension(docFile));
         resp.setContentType(mime);
 
-
-        ServletOutputStream outputStream = resp.getOutputStream();
-        IOUtils.copy(new FileInputStream(docFile), outputStream);
-    }
-
-    private static File getDocFile(String docPath) {
-        if (docBaseFile  == null) {
-            AddOnInfo aoi = AddOnInfo.getAddOnInfo();
-            File publicFile = aoi.getPublicDir();
-            String name = aoi.getName();
-            File systemFile = publicFile.getParentFile().getParentFile();
-            String systemName = systemFile.getName();
-            String relPath = systemName+"/webapp_data/"+name+"/private/docs/";
-            docBaseFile = new File(systemFile, relPath);
-            docBaseFile.mkdirs();
+        try {
+            ServletOutputStream outputStream = resp.getOutputStream();
+            IOUtils.copy(new FileInputStream(docFile), outputStream);
+        } catch (IOException e) {
+            Logging.println("Error copying file from '"+req.getPathInfo()+"'", e);
         }
-        return new File(docBaseFile,docPath);
     }
 
     private static String getExtension(File docFile) {
@@ -65,6 +55,12 @@ public class DocumentServlet extends HttpServlet {
         }
         return "text/plain";
     }
+
+    private static File getDocFile(String docPath) {
+        File docBaseFile = AddOnFiles.getDocBaseFile();
+        return new File(docBaseFile,docPath);
+    }
+
 
 
 }
