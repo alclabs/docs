@@ -3,52 +3,70 @@ package com.alcshare.docs.util;
 import com.controlj.green.addonsupport.AddOnInfo;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  *
  */
 public class AddOnFiles {
-    private static File addOnPrivateFile;
-    private static File docBaseFile;
-    private static File configBaseFile;
-    private static File templatesFile;
+    private static final AtomicReference<File> addOnPrivateFile = new AtomicReference<File>();
+    private static final AtomicReference<File> addOnDocBaseFile = new AtomicReference<File>();
+    private static final AtomicReference<File> addOnConfigBaseFile = new AtomicReference<File>();
+    private static final AtomicReference<File> addOnContentBaseFile = new AtomicReference<File>();
+    private static final AtomicReference<File> addOnTemplateBaseFile = new AtomicReference<File>();
 
     public static File getDocDirectory() {
+        File docBaseFile = addOnDocBaseFile.get();
         if (docBaseFile  == null) {
             docBaseFile = new File(getAddOnPrivateDirectory(), "docs");
             docBaseFile.mkdirs();
+            addOnDocBaseFile.set(docBaseFile);
         }
         return docBaseFile;
     }
 
     public static File getConfigDirectory() {
+        File configBaseFile = addOnConfigBaseFile.get();
         if (configBaseFile  == null) {
             configBaseFile = new File(getAddOnPrivateDirectory(), "config");
             configBaseFile.mkdirs();
+            addOnConfigBaseFile.set(configBaseFile);
         }
         return configBaseFile;
     }
+    
+    /*
+    public static File getContentBaseFile() {
+        File contentBaseFile = addOnContentBaseFile.get();
+        if (contentBaseFile == null) {
+            contentBaseFile = new File(getAddOnPrivateDirectory(), "content");
+            contentBaseFile.mkdirs();
+            addOnContentBaseFile.set(contentBaseFile);
+        }
+        return contentBaseFile;
+    }
+    */
 
     public static File getTemplatesDirectory() {
-        if (templatesFile == null) {
-            templatesFile = new File(getAddOnPrivateDirectory(), "templates");
-            templatesFile.mkdirs();
+        File templatesBaseFile = addOnTemplateBaseFile.get();
+        if (templatesBaseFile == null) {
+            templatesBaseFile = new File(getAddOnPrivateDirectory(), "templates");
+            templatesBaseFile.mkdirs();
+            addOnTemplateBaseFile.set(templatesBaseFile);
         }
-        return templatesFile;
+        return templatesBaseFile;
     }
 
-    public static File getAddOnPrivateDirectory() {
-        if (addOnPrivateFile  == null) {
+
+    private static File getAddOnPrivateDirectory() {
+        File privateFile = addOnPrivateFile.get();
+        if (privateFile == null) {
             AddOnInfo aoi = AddOnInfo.getAddOnInfo();
-            File publicFile = aoi.getPublicDir();
-            String name = aoi.getName();
-            File systemFile = publicFile.getParentFile().getParentFile();
-            String relPath = "webapp_data/"+name+"/private";
-            addOnPrivateFile = new File(systemFile, relPath);
-            addOnPrivateFile.mkdirs();
+            File systemFile = aoi.getPublicDir().getParentFile().getParentFile();
+            String relPath = "webapp_data/"+aoi.getName()+"/private";
+            privateFile = new File(systemFile, relPath);
+            addOnPrivateFile.set(privateFile);
         }
-        return addOnPrivateFile;
+        return privateFile;
     }
-
-
 }
