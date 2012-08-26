@@ -7,6 +7,8 @@ import com.alcshare.docs.util.Logging;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.exception.ResourceNotFoundException;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -26,6 +28,7 @@ public class ContentServlet extends HttpServlet{
     private static boolean velocityInitialized = false;
     private static final String CONFIG_PROPERTIES = "/WEB-INF/velocityconfig.properties";
     private static final String DEFAULT_TEMPLATE = "/com/alcshare/docs/templates/default.vm";
+    private static final String PARAM_STYLE = "style";
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -35,7 +38,16 @@ public class ContentServlet extends HttpServlet{
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Template t = Velocity.getTemplate(DEFAULT_TEMPLATE);
+        String style = req.getParameter(PARAM_STYLE);
+        Template t = null;
+        if (style != null) {
+            try {
+                t = Velocity.getTemplate(style);
+            } catch (Exception e) { }
+        }
+        if (t == null) {
+            t = Velocity.getTemplate(DEFAULT_TEMPLATE);
+        }
         VelocityContext context = new VelocityContext();
         List<DocumentReference> references = DocumentManager.INSTANCE.getReferences(req);
         context.put("documents", references);
