@@ -48,6 +48,75 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
         where they are attached. It is a simple text file of comma separated values.  This file should be easy to
         edit with a spreadsheet program like Excel.
     </p>
+    <p>
+        The first row must contain the column names and the first three columns must be named
+        &quot;<span class="examp">refpath,title,docpath</span>&quot;.  An example docs.csv file is shown below.
+    </p>
+    <pre>refpath,title,docpath
+#first_floor/main_conference_room,As Built,ab/mcr_asbuilt.pdf
+#first_floor/main_conference_room,Parts List,list/mcr_parts_list.txt
+#ahu_1,As Built,ab/ahu1_asbuilt.pdf</pre>
+    <div class="indent">
+        <h4>refpath</h4>
+        <p>
+            The refpath column is the reference name path (sometimes called GQL path) to the location where
+            the documents are to be attached.  You can get this path by right-clicking on a location in the WebCTRL
+            tree and picking &quot;Copy path&quot;.  You can also get the path from the &quot;whereami&quot; manual command.
+        </p>
+        <h4>title</h4>
+        <p>
+            The title column contains the text that you wish to use when referring to the document.
+        </p>
+
+        <h4>docpath</h4>
+        <p>
+            The docpath column is the relative path from the private/docs directory to the documentation file attached
+            to the specified location.
+        </p>
+    </div>
+    <p>Note that you should use multiple rows with the same refpath to attach multiple document files to
+    the same location.</p>
+
+    <h3>docs</h3>
+    <p>The docs directory contains the documentation files that this add-on will provide links to.</p>
+
+    <h3>templates</h3>
+    <p>
+        The templates directory can contain optional formatting templates to render the add-on content
+        in the WebApp Content control on a graphic page in an alternate format.  These are "Velocity Templates".
+        While most changes may be accomplished by simply modifying one of the standard templates, there is
+        a great deal more information on formatting Velocity Templates
+        <a target="_blank" href="http://velocity.apache.org/engine/releases/velocity-1.7/user-guide.html">on the Velocity project site</a>.
+        The docs add-on provides a single variable, <span class="examp">$documents</span>.  This provides a list
+        of attached documents for the current location.  An example template that demonstrates some basic
+        features of the templating language is shown below:
+    </p>
+    <pre>&lt;style type="text/css">
+    .links {padding-left: 15px;}
+&lt;/style>
+#if ($documents.isEmpty())
+    &lt;div>No Documentation&lt;/div>
+#else
+    &lt;div>Documentation:&lt;/div>
+    &lt;div class="links">
+    #foreach( $doc in $documents )
+        &lt;div>&lt;a target="_blank" href="$doc.DocURL">$doc.Title&lt;/a>&lt;/div>
+    #end
+    &lt;/div>
+#end
+</pre>
+    <p>
+        Each document contained in the list of $documents ($doc in the above example), contains fields
+        related to the columns in the docs.csv file.  The title is available as $doc.Title.  The relative path to the
+        document is not very useful directly, but a URL that can serve us that file is available as $doc.DocURL.
+    </p>
+    <p>
+        If you create your own template, place the file in the templates directory and refer to it using the
+        style parameter in the WebApp Content control.
+    </p>
 </div>
+<p>Currently all of this configuration information is only read when the add-on starts, so if you change any of the
+configuration files, you must either re-start WebCTRL or disable and then re-enable the add-on on the
+management page under the config tree.</p>
 </body>
 </html>

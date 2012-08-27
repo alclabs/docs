@@ -1,9 +1,7 @@
 <style type="text/css">
     .links {padding-left: 15px;}
 </style>
-#if ($documents.isEmpty())
-    <div>No Documentation</div>
-#else
+#if (!$documents.isEmpty())
     <div>Documentation:</div>
     <div class="links">
     #foreach( $doc in $documents )
