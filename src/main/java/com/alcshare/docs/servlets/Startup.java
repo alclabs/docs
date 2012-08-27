@@ -1,6 +1,7 @@
 package com.alcshare.docs.servlets;
 
 import com.alcshare.docs.DocumentManager;
+import com.alcshare.docs.MimeManager;
 import com.alcshare.docs.util.AddOnFiles;
 import com.alcshare.docs.util.Logging;
 import com.controlj.green.addonsupport.access.DirectAccess;
@@ -25,6 +26,8 @@ public class Startup implements ServletContextListener
         {
             createDefaultConfig(configFile);
         }
+
+        MimeManager.initialize();  // create default mime type file if needed
 
         try {
             DocumentManager.INSTANCE.loadConfiguration(configFile);

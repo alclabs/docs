@@ -1,5 +1,6 @@
 package com.alcshare.docs.servlets;
 
+import com.alcshare.docs.MimeManager;
 import com.alcshare.docs.util.AddOnFiles;
 import com.alcshare.docs.util.Logging;
 import org.apache.commons.io.IOUtils;
@@ -21,7 +22,7 @@ public class DocumentServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
         File docFile = getDocFile(req.getPathInfo());
-        String mime = getMimeType(getExtension(docFile));
+        String mime = MimeManager.getMimeTypeForExtension(getExtension(docFile));
         resp.setContentType(mime);
 
         try {
