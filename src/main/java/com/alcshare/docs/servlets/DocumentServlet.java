@@ -25,6 +25,8 @@ public class DocumentServlet extends HttpServlet {
         resp.setContentType(mime);
 
         try {
+            resp.setContentLength((int)docFile.length());
+
             ServletOutputStream outputStream = resp.getOutputStream();
             IOUtils.copy(new FileInputStream(docFile), outputStream);
             outputStream.flush();
@@ -33,11 +35,21 @@ public class DocumentServlet extends HttpServlet {
         }
     }
 
+    @Override
+    protected long getLastModified(HttpServletRequest req) {
+        File docFile = getDocFile(req.getPathInfo());
+        long lm = docFile.lastModified();
+        if (lm == 0L) {
+            lm = System.currentTimeMillis();
+        }
+        return lm;
+    }
+
     private static String getExtension(File docFile) {
         String name = docFile.getName();
         int dotIndex = name.lastIndexOf(".");
         if (dotIndex >= 0) {
-            return name.substring(dotIndex);
+            return name.substring(dotIndex+1);
         } else {
             return "";
         }
