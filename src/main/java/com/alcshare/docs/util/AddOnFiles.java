@@ -12,7 +12,6 @@ public class AddOnFiles {
     private static final AtomicReference<File> addOnPrivateFile = new AtomicReference<File>();
     private static final AtomicReference<File> addOnDocBaseFile = new AtomicReference<File>();
     private static final AtomicReference<File> addOnConfigBaseFile = new AtomicReference<File>();
-    private static final AtomicReference<File> addOnContentBaseFile = new AtomicReference<File>();
     private static final AtomicReference<File> addOnTemplateBaseFile = new AtomicReference<File>();
 
     public static File getDocDirectory() {
@@ -35,18 +34,6 @@ public class AddOnFiles {
         return configBaseFile;
     }
     
-    /*
-    public static File getContentBaseFile() {
-        File contentBaseFile = addOnContentBaseFile.get();
-        if (contentBaseFile == null) {
-            contentBaseFile = new File(getAddOnPrivateDirectory(), "content");
-            contentBaseFile.mkdirs();
-            addOnContentBaseFile.set(contentBaseFile);
-        }
-        return contentBaseFile;
-    }
-    */
-
     public static File getTemplatesDirectory() {
         File templatesBaseFile = addOnTemplateBaseFile.get();
         if (templatesBaseFile == null) {

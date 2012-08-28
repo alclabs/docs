@@ -18,10 +18,13 @@ import java.io.IOException;
  *
  */
 public class DocumentServlet extends HttpServlet {
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
+    @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         File docFile = getDocFile(req.getPathInfo());
+        if (!docFile.canRead()) {
+            resp.sendError(404, "File "+docFile+" cannot be read");
+            return;
+        }
+        
         String mime = MimeManager.getMimeTypeForExtension(getExtension(docFile));
         resp.setContentType(mime);
 
@@ -29,15 +32,20 @@ public class DocumentServlet extends HttpServlet {
             resp.setContentLength((int)docFile.length());
 
             ServletOutputStream outputStream = resp.getOutputStream();
-            IOUtils.copy(new FileInputStream(docFile), outputStream);
-            outputStream.flush();
+            FileInputStream inputStream = new FileInputStream(docFile);
+            try {
+                IOUtils.copy(inputStream, outputStream);
+                outputStream.flush();
+            }
+            finally {
+                inputStream.close();
+            }
         } catch (IOException e) {
             Logging.println("Error copying file from '"+req.getPathInfo()+"'", e);
         }
     }
 
-    @Override
-    protected long getLastModified(HttpServletRequest req) {
+    @Override protected long getLastModified(HttpServletRequest req) {
         File docFile = getDocFile(req.getPathInfo());
         long lm = docFile.lastModified();
         if (lm == 0L) {
@@ -56,24 +64,8 @@ public class DocumentServlet extends HttpServlet {
         }
     }
 
-    private static String getMimeType(String extension) {
-        if (extension.equalsIgnoreCase("pdf")) {
-            return "application/pdf";
-        } else if (extension.equalsIgnoreCase("html")) {
-            return "text/html";
-        } else if (extension.equalsIgnoreCase("css")) {
-            return "text/css";
-        } else if (extension.equalsIgnoreCase("doc")) {
-            return "application/msword";
-        }
-        return "text/plain";
-    }
-
     private static File getDocFile(String docPath) {
         File docBaseFile = AddOnFiles.getDocDirectory();
         return new File(docBaseFile,docPath);
     }
-
-
-
 }
