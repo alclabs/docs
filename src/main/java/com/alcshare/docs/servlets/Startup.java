@@ -29,10 +29,14 @@ public class Startup implements ServletContextListener
 
         MimeManager.initialize();  // create default mime type file if needed
 
-        try {
-            DocumentManager.INSTANCE.loadConfiguration(configFile);
-        } catch (Exception e) {
-            Logging.println("Error parsing configuration file", e);
+        if (configFile.exists()) {
+            try {
+                DocumentManager.INSTANCE.loadConfiguration(configFile);
+            } catch (Exception e) {
+                Logging.println("Error parsing configuration file", e);
+            }
+        } else {
+            Logging.println("Configuration file '"+configFile.getAbsolutePath()+"' is missing");
         }
 
         AddOnFiles.getDocDirectory();  // just to make sure the directory exists

@@ -53,6 +53,8 @@ public class MimeManager {
             } catch (IOException e) {
                 Logging.println("Error writing default file "+mimeFile.getAbsolutePath(), e);
             }
+        } else {
+            Logging.println("Mime configuration file '"+mimeFile.getAbsolutePath()+"' is missing");
         }
 
         loadMimeTypes();
