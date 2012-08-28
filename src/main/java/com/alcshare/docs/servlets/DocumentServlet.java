@@ -56,24 +56,9 @@ public class DocumentServlet extends HttpServlet {
         }
     }
 
-    private static String getMimeType(String extension) {
-        if (extension.equalsIgnoreCase("pdf")) {
-            return "application/pdf";
-        } else if (extension.equalsIgnoreCase("html")) {
-            return "text/html";
-        } else if (extension.equalsIgnoreCase("css")) {
-            return "text/css";
-        } else if (extension.equalsIgnoreCase("doc")) {
-            return "application/msword";
-        }
-        return "text/plain";
-    }
 
     private static File getDocFile(String docPath) {
         File docBaseFile = AddOnFiles.getDocDirectory();
         return new File(docBaseFile,docPath);
     }
-
-
-
 }

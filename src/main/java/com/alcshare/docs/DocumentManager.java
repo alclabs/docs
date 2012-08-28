@@ -10,10 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -34,6 +31,7 @@ public enum DocumentManager {
     private static class LoadConfigurationAction implements ReadAction {
         private CSVReader reader;
         private HashMap<String, List<DocumentReference>> docRefs;
+        private String[] customColumns = new String[0];
 
         public LoadConfigurationAction(Reader reader, HashMap<String,List<DocumentReference>> docRefs) {
             this.reader = new CSVReader(reader);
@@ -48,8 +46,22 @@ public enum DocumentManager {
             clearConfiguration();
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
-                DocumentReference ref = new DocumentReference(nextLine[0], nextLine[1], nextLine[2], findLocation(access, nextLine[0]));
+                DocumentReference ref = new DocumentReference(nextLine[0], nextLine[1], nextLine[2],
+                        findLocation(access, nextLine[0]),
+                        loadExtraColumns(nextLine));
                 addRef(ref);
+            }
+        }
+
+        private Map<String,String> loadExtraColumns(String[] line) {
+            if (line.length > 3) {
+                HashMap<String,String> result = new HashMap<String, String>();
+                for (int i=3; i<line.length; i++) {
+                    result.put(customColumns[i-3], line[i]);
+                }
+                return result;
+            } else {
+                return Collections.emptyMap();
             }
         }
 
@@ -59,12 +71,16 @@ public enum DocumentManager {
                     if (headers[0].equals("refpath") &&
                         headers[1].equals("title") &&
                         headers[2].equals("docpath")) {
+                        customColumns = new String[headers.length - 3];
+                        for (int i=3; i<headers.length; i++) {
+                            customColumns[i-3] = headers[i];
+                        }
                         return;
                     }
                 }
             }
 
-            throw new Exception("Invalid config file header.  Header should be ");
+            throw new Exception("Invalid config file header.  Headers should be refpath,title,docpath");
         }
 
         private Location findLocation(SystemAccess access, String refPath) throws UnresolvableException {

@@ -4,30 +4,33 @@ import com.controlj.green.addonsupport.AddOnInfo;
 import com.controlj.green.addonsupport.access.Location;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  */
 public class DocumentReference
 {
-    // todo - use lookupString after we can generate the default file
-    //private String lookupString;
 
     private String gqlPath;
     private String title;
     private String docPath;
     private Location location;
+    private Map<String,String> extraColumns;
     private static String ADDON_NAME;
+
 
     // todo - field for specifying order of documents
     // todo - type and user specified columns
 
 
-    public DocumentReference(String gqlPath, String title, String docPath, Location location) {
+    public DocumentReference(String gqlPath, String title, String docPath, Location location, Map<String,String> extraColumns) {
         this.gqlPath = gqlPath;
         this.title = title;
         this.docPath = getNormalizedDocPath(docPath);
         this.location = location;
+        this.extraColumns = extraColumns;
     }
 
     public String getGqlPath()
@@ -63,6 +66,17 @@ public class DocumentReference
         } else {
             return "/" + path;
         }
+    }
+    public String get(String columnName) {
+        String columnValue = extraColumns.get(columnName);
+        if (columnValue == null) {
+            if (columnName.equalsIgnoreCase("title")) {
+                columnValue = getTitle();
+            } else if (columnName.equalsIgnoreCase("docurl")) {
+                columnValue = getDocURL();
+            }
+        }
+        return columnValue;
     }
 
 }

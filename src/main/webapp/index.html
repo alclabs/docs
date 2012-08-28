@@ -73,6 +73,12 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
             The docpath column is the relative path from the private/docs directory to the documentation file attached
             to the specified location.
         </p>
+
+        <h4>Extra Columns</h4>
+        <p>
+            You can add your own custom columns here. The name you use for the column header can be used to reference
+            it from a custom template.
+        </p>
     </div>
     <p>Note that you should use multiple rows with the same refpath to attach multiple document files to
     the same location.</p>
@@ -116,6 +122,9 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
         Each document contained in the list of $documents ($doc in the above example), contains fields
         related to the columns in the docs.csv file.  The title is available as $doc.Title.  The relative path to the
         document is not very useful directly, but a URL that can serve us that file is available as $doc.DocURL.
+        If you added custom columns to your docs.csv file, you may refer to the content of that column
+        using the header name.  For example, if you added a column with a header of &quot;type&quot;, then
+        you could refer to the value in that column with <span class="examp">$doc.type</span>
     </p>
     <p>
         If you create your own template, place the file in the templates directory and refer to it using the
