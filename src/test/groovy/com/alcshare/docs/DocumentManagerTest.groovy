@@ -15,8 +15,8 @@ class DocumentManagerTest extends Specification {
            Location location = Mock();
 
            StringReader testConfig = new StringReader('''\
-refpath,title,docpath
-#ahu1,This is a test,one/two/three
+refpath,disppath,title,docpath
+"#ahu1","This is ,ignored","This is a test","one/two/three"
 ''')
            def action = new DocumentManager.LoadConfigurationAction(testConfig, docRefs)
 
@@ -40,9 +40,9 @@ refpath,title,docpath
            Location location = Mock();
 
            StringReader testConfig = new StringReader('''\
-refpath,title,docpath,type,color
-#ahu1,This is a test,one/two/three,type1,red
-another/vav,Title2,"path with a space",type2,blue
+refpath,disppath,title,docpath,type,color
+#ahu1,Ignored,This is a test,one/two/three,type1,red
+another/vav,"This is ignored",Title2,"path with a space",type2,blue
 ''')
            def action = new DocumentManager.LoadConfigurationAction(testConfig, docRefs)
 

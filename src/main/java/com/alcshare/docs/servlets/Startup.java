@@ -6,6 +6,7 @@ import com.alcshare.docs.util.AddOnFiles;
 import com.alcshare.docs.util.Logging;
 import com.controlj.green.addonsupport.access.DirectAccess;
 import com.controlj.green.addonsupport.access.SystemConnection;
+import org.apache.commons.lang.time.StopWatch;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -24,7 +25,11 @@ public class Startup implements ServletContextListener
 
         if (!configFile.exists())
         {
-            createDefaultConfig(configFile);
+            StopWatch sw = new StopWatch();
+            sw.start();
+            DocumentManager.INSTANCE.saveConfiguration(configFile);
+            sw.stop();
+            Logging.println("Created new configuration file in "+sw);
         }
 
         MimeManager.initialize();  // create default mime type file if needed
@@ -40,12 +45,6 @@ public class Startup implements ServletContextListener
         }
 
         AddOnFiles.getDocDirectory();  // just to make sure the directory exists
-    }
-
-    private void createDefaultConfig(File configFile)
-    {
-        SystemConnection connection = DirectAccess.getDirectAccess().getRootSystemConnection();
-        //todo - build default file
     }
 
     @Override

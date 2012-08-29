@@ -46,16 +46,17 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
         The private/config directory contains the files that configure the add-on.  The most important of these is
         <span class="examp">docs.csv</span>.  This is the file that enumerates the documents and the locations
         where they are attached. It is a simple text file of comma separated values.  This file should be easy to
-        edit with a spreadsheet program like Excel.
+        edit with a spreadsheet program like Excel. If this file does not exist when the add-on is started, a
+        starting file with only values for refpath and disppath will be created.
     </p>
     <p>
         The first row must contain the column names and the first three columns must be named
-        &quot;<span class="examp">refpath,title,docpath</span>&quot;.  An example docs.csv file is shown below.
+        &quot;<span class="examp">refpath,disppath,title,docpath</span>&quot;.  An example docs.csv file is shown below.
     </p>
-    <pre>refpath,title,docpath
-#first_floor/main_conference_room,As Built,ab/mcr_asbuilt.pdf
-#first_floor/main_conference_room,Parts List,list/mcr_parts_list.txt
-#ahu_1,As Built,ab/ahu1_asbuilt.pdf</pre>
+    <pre>refpath,disppath,title,docpath
+#first_floor/main_conference_room,&quot;/Campus/Green Bldg/First Floor/Main Conference Room&quot;,&quot;As Built&quot;,ab/mcr_asbuilt.pdf
+#first_floor/main_conference_room,&quot;/Campus/Green Bldg/First Floor/Main Conference Room&quot;,&quot;Parts List&quot;,list/mcr_parts_list.txt
+#ahu_1,&quot;/Campus/Green Bldg/East Wing/AHU 1&quot;,&quot;As Built&quot;,ab/ahu1_asbuilt.pdf</pre>
     <div class="indent">
         <h4>refpath</h4>
         <p>
@@ -63,6 +64,14 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
             the documents are to be attached.  You can get this path by right-clicking on a location in the WebCTRL
             tree and picking &quot;Copy path&quot;.  You can also get the path from the &quot;whereami&quot; manual command.
         </p>
+
+        <h4>disppath</h4>
+        <p>
+            The display path column contains a path constructed from the hierarchy of display names.
+            It is not used when the configuration is read in, but is written out in the
+            default file to help identify the location of the row.
+        </p>
+
         <h4>title</h4>
         <p>
             The title column contains the text that you wish to use when referring to the document.

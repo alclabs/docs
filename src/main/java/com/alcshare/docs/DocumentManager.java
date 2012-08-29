@@ -1,6 +1,7 @@
 package com.alcshare.docs;
 
 import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.CSVWriter;
 import com.alcshare.docs.util.Logging;
 import com.controlj.green.addonsupport.InvalidConnectionRequestException;
 import com.controlj.green.addonsupport.access.*;
@@ -18,8 +19,10 @@ import java.util.*;
 public enum DocumentManager {
     INSTANCE;
 
+    private static String[] defaultHeader = new String[]{"refpath", "disppath", "title", "docpath"};
+
     private final HashMap<String,List<DocumentReference>> docRefs = new HashMap<String,List<DocumentReference>>();
-    public synchronized void loadConfiguration(File configFile) throws IOException, SystemException, ActionExecutionException {
+    public void loadConfiguration(File configFile) throws IOException, SystemException, ActionExecutionException {
         SystemConnection connection = DirectAccess.getDirectAccess().getRootSystemConnection();
         loadConfigurationInternal(new FileReader(configFile), connection);
     }
@@ -46,18 +49,20 @@ public enum DocumentManager {
             clearConfiguration();
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
-                DocumentReference ref = new DocumentReference(nextLine[0], nextLine[1], nextLine[2],
-                        findLocation(access, nextLine[0]),
-                        loadExtraColumns(nextLine));
-                addRef(ref);
+                if (nextLine.length >= defaultHeader.length) {
+                    DocumentReference ref = new DocumentReference(nextLine[0], nextLine[2], nextLine[3],
+                            findLocation(access, nextLine[0]),
+                            loadExtraColumns(nextLine));
+                    addRef(ref);
+                }
             }
         }
 
         private Map<String,String> loadExtraColumns(String[] line) {
-            if (line.length > 3) {
+            if (line.length > defaultHeader.length) {
                 HashMap<String,String> result = new HashMap<String, String>();
-                for (int i=3; i<line.length; i++) {
-                    result.put(customColumns[i-3], line[i]);
+                for (int i=defaultHeader.length; i<line.length; i++) {
+                    result.put(customColumns[i-defaultHeader.length], line[i]);
                 }
                 return result;
             } else {
@@ -67,20 +72,28 @@ public enum DocumentManager {
 
         private void validateHeaders(String[] headers) throws Exception {
             if (headers != null) {
-                if (headers.length >= 3) {
-                    if (headers[0].equals("refpath") &&
-                        headers[1].equals("title") &&
-                        headers[2].equals("docpath")) {
-                        customColumns = new String[headers.length - 3];
-                        for (int i=3; i<headers.length; i++) {
-                            customColumns[i-3] = headers[i];
+                if (headers.length >= defaultHeader.length) {
+                    if (arrayStartsWith(headers, defaultHeader)) {
+                        customColumns = new String[headers.length - defaultHeader.length];
+                        for (int i=defaultHeader.length; i<headers.length; i++) {
+                            customColumns[i-defaultHeader.length] = headers[i];
                         }
                         return;
                     }
                 }
             }
 
-            throw new Exception("Invalid config file header.  Headers should be refpath,title,docpath");
+            throw new Exception("Invalid config file header.  Headers should be refpath,disppath,title,docpath");
+        }
+
+        private boolean arrayStartsWith(String[] test, String[] starts) {
+            if (test.length < starts.length) { return false; }
+
+            for (int i=0; i<starts.length; i++) {
+                if (!test[i].equals(starts[i])) { return false; }
+            }
+
+            return true;
         }
 
         private Location findLocation(SystemAccess access, String refPath) throws UnresolvableException {
@@ -105,6 +118,87 @@ public enum DocumentManager {
         private void clearConfiguration() {
             synchronized (docRefs) {
                 docRefs.clear();
+            }
+        }
+    }
+
+    public void saveConfiguration(File configFile) {
+        SystemConnection connection = DirectAccess.getDirectAccess().getRootSystemConnection();
+        try {
+            FileWriter outWriter = new FileWriter(configFile);
+            connection.runReadAction(new WriteConfigurationAction(outWriter, docRefs));
+            outWriter.close();
+        } catch (Exception e) {
+            Logging.println("Error writing configuration file", e);
+        }
+    }
+
+    private static class WriteConfigurationAction implements ReadAction {
+        private final CSVWriter output;
+        private final HashMap<String, List<DocumentReference>> docRefs;
+
+        public WriteConfigurationAction(Writer output, HashMap<String, List<DocumentReference>> docRefs) {
+            this.output = new CSVWriter(output);
+            this.docRefs = docRefs;
+        }
+
+        @Override
+        public void execute(@NotNull SystemAccess access) throws Exception {
+            output.writeNext(defaultHeader);
+            access.visit(access.getGeoRoot(), new ConfigWriterVisitor());
+        }
+
+        private class ConfigWriterVisitor extends Visitor {
+            public ConfigWriterVisitor() { super(false); }
+
+            @Override
+            public void visit(@NotNull Location location) {
+                String lus = location.getPersistentLookupString(true);
+                List<DocumentReference> docRefList;
+                synchronized (docRefs) {
+                    docRefList = docRefs.get(lus);
+                }
+                if (docRefList != null) {
+                    // todo - insert existing stuff
+                } else {
+                    writeDefaultRow(location);
+                }
+            }
+
+            private void writeDefaultRow(Location location) {
+
+                output.writeNext(new String[] { getGQLPath(location), getFullDisplayPath(location) });
+            }
+
+            private String getGQLPath(Location location) {
+                String referenceName = location.getReferenceName();
+                if (referenceName.startsWith("#")) {
+                    return referenceName;
+                } else if (location.hasParent()) {
+                    try {
+                        return getGQLPath(location.getParent()) + "/" + referenceName;
+                    } catch (UnresolvableException e) {
+                        Logging.println("Unexpected exception while creating GQL path", e);
+                        return "";
+                    }
+                } else {
+                    return "/trees/geographic";
+                }
+            }
+
+            private String getFullDisplayPath(Location location) {
+                String displayName = location.getDisplayName();
+                if (location.hasParent()) {
+                    try {
+                        return getFullDisplayPath(location.getParent()) + "/" + displayName;
+                    } catch (UnresolvableException e) {
+                        Logging.println("Error formatting display path", e);
+                        return "";
+                    }
+                } else {
+                    return displayName;
+                }
+
             }
         }
     }
