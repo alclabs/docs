@@ -27,7 +27,15 @@ import java.io.PrintWriter;
 
 public class Logging
 {
-   public static final PrintWriter LOGGER = new PrintWriter(AddOnInfo.getAddOnInfo().getDateStampLogger());
+   public static final PrintWriter LOGGER = getLogger();
+
+   private static PrintWriter getLogger() {
+       try {
+        return new PrintWriter(AddOnInfo.getAddOnInfo().getDateStampLogger());
+       } catch (Throwable th) {
+           return new PrintWriter(System.err);
+       }
+   }
 
    public static void println(String msg)
    {

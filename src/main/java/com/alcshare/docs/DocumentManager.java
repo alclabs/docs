@@ -19,7 +19,7 @@ import java.util.*;
 public enum DocumentManager {
     INSTANCE;
 
-    private static String[] defaultHeader = new String[]{"refpath", "disppath", "title", "docpath"};
+    private static String[] defaultHeader = new String[]{"Reference Path", "Display Path", "Title", "Document Path", "Path Type"};
 
     private final HashMap<String,List<DocumentReference>> docRefs = new HashMap<String,List<DocumentReference>>();
     public void loadConfiguration(File configFile) throws IOException, SystemException, ActionExecutionException {
@@ -49,16 +49,17 @@ public enum DocumentManager {
             clearConfiguration();
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
-                if (nextLine.length >= defaultHeader.length) {
+                if (nextLine.length >= defaultHeader.length-1) {
                     try {
                         DocumentReference ref = new DocumentReference(nextLine[0], nextLine[2], nextLine[3],
+                                nextLine.length>4 ? nextLine[4] : null,
                                 findLocation(access, nextLine[0]),
                                 loadExtraColumns(nextLine));
                         addRef(ref);
                     } catch (UnresolvableException ex) {
                         Logging.println("Error processing a row in docs.csv.  Unable to resolve the location '"+nextLine[0]+"'");
                     } catch (Throwable th) {
-                        Logging.println("Unexpected error while adding the row: "+Arrays.toString(nextLine));
+                        Logging.println("Unexpected error while adding the row: "+Arrays.toString(nextLine), th);
                     }
                 }
             }
@@ -89,7 +90,7 @@ public enum DocumentManager {
                 }
             }
 
-            throw new Exception("Invalid config file header.  Headers should be refpath,disppath,title,docpath");
+            throw new Exception("Invalid config file header.  Headers should be "+Arrays.toString(defaultHeader));
         }
 
         private boolean arrayStartsWith(String[] test, String[] starts) {

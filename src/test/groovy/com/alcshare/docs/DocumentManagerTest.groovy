@@ -15,7 +15,7 @@ class DocumentManagerTest extends Specification {
            Location location = Mock();
 
            StringReader testConfig = new StringReader('''\
-refpath,disppath,title,docpath
+Reference Path,Display Path,Title,Document Path,Path Type
 "#ahu1","This is ,ignored","This is a test","one/two/three"
 ''')
            def action = new DocumentManager.LoadConfigurationAction(testConfig, docRefs)
@@ -26,11 +26,14 @@ refpath,disppath,title,docpath
            def result = results.getAt(0)
 
         then:
+           results != null
+           results.size() == 1
            access.resolveGQLPath("#ahu1") >> location
            location.getPersistentLookupString(true) >> "DBID:1:1492"
-           result.docPath == "/one/two/three"
+           result.docPath == "one/two/three"
            result.getGqlPath() == "#ahu1"
            result.title == "This is a test"
+           result.URL == "/TEST/content/one/two/three"
     }
 
     def testTwoCustomColumns() {
@@ -40,9 +43,9 @@ refpath,disppath,title,docpath
            Location location = Mock();
 
            StringReader testConfig = new StringReader('''\
-refpath,disppath,title,docpath,type,color
-#ahu1,Ignored,This is a test,one/two/three,type1,red
-another/vav,"This is ignored",Title2,"path with a space",type2,blue
+"Reference Path","Display Path","Title","Document Path","Path Type",Category,Color
+#ahu1,Ignored,This is a test,/one/two/three,,type1,red
+another/vav,"This is ignored",Title2,"path with a space",doc,type2,blue
 ''')
            def action = new DocumentManager.LoadConfigurationAction(testConfig, docRefs)
 
@@ -59,13 +62,16 @@ another/vav,"This is ignored",Title2,"path with a space",type2,blue
            result1.gqlPath == "#ahu1"
            result1.title == "This is a test"
            result1.docPath == "/one/two/three"
-           result1.get('type') == 'type1'
-           result1.get('color') == 'red'
+           result1.get('Category') == 'type1'
+           result1.get('Color') == 'red'
+           result1.URL == "/TEST/content/one/two/three"
+
 
            result2.gqlPath == "another/vav"
            result2.title == "Title2"
-           result2.docPath == "/path with a space"
-           result2.get('type') == 'type2'
-           result2.get('color') == 'blue'
+           result2.docPath == "path with a space"
+           result2.get('Category') == 'type2'
+           result2.get('Color') == 'blue'
+           result2.URL == "/TEST/content/path%20with%20a%20space"
     }
 }

@@ -5,7 +5,7 @@
     <div>Documentation:</div>
     <div class="links">
     #foreach( $doc in $documents )
-        <div><a target="_blank" href="$doc.DocURL">$doc.Title</a></div>
+        <div><a target="_blank" href="$doc.URL">$doc.Title</a></div>
     #end
     </div>
 #end
