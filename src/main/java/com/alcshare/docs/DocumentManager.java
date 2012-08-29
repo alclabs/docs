@@ -50,10 +50,16 @@ public enum DocumentManager {
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
                 if (nextLine.length >= defaultHeader.length) {
-                    DocumentReference ref = new DocumentReference(nextLine[0], nextLine[2], nextLine[3],
-                            findLocation(access, nextLine[0]),
-                            loadExtraColumns(nextLine));
-                    addRef(ref);
+                    try {
+                        DocumentReference ref = new DocumentReference(nextLine[0], nextLine[2], nextLine[3],
+                                findLocation(access, nextLine[0]),
+                                loadExtraColumns(nextLine));
+                        addRef(ref);
+                    } catch (UnresolvableException ex) {
+                        Logging.println("Error processing a row in docs.csv.  Unable to resolve the location '"+nextLine[0]+"'");
+                    } catch (Throwable th) {
+                        Logging.println("Unexpected error while adding the row: "+Arrays.toString(nextLine));
+                    }
                 }
             }
         }
