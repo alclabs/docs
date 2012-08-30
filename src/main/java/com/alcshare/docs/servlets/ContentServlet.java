@@ -27,7 +27,7 @@ import java.util.Properties;
 public class ContentServlet extends HttpServlet{
     private static boolean velocityInitialized = false;
     private static final String CONFIG_PROPERTIES = "/WEB-INF/velocityconfig.properties";
-    private static final String DEFAULT_TEMPLATE = "/com/alcshare/docs/templates/default.vm";
+    private static final String DEFAULT_TEMPLATE = "default.vm";
     private static final String PARAM_STYLE = "style";
 
     @Override
@@ -40,13 +40,13 @@ public class ContentServlet extends HttpServlet{
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String style = req.getParameter(PARAM_STYLE);
         Template t = null;
-        if (style != null) {
-            try {
-                t = Velocity.getTemplate(style);
-            } catch (Exception e) { }
+        if (style == null) {
+            style = DEFAULT_TEMPLATE;
         }
-        if (t == null) {
-            t = Velocity.getTemplate(DEFAULT_TEMPLATE);
+        try {
+            t = Velocity.getTemplate(style);
+        } catch (Exception e) {
+            Logging.println("Error getting template for requested style '"+style+"'", e);
         }
         VelocityContext context = new VelocityContext();
         List<DocumentReference> references = DocumentManager.INSTANCE.getReferences(req);
@@ -57,14 +57,17 @@ public class ContentServlet extends HttpServlet{
 
     private void loadVelocity(ServletContext context) {
         if (!velocityInitialized) {
+            // Currently only using file resource loader, which is the default, so this config is no longer needed
+            /*
             InputStream stream = context.getResourceAsStream(CONFIG_PROPERTIES);
             if (stream == null) {
                 Logging.println("ERROR: Can't find velocity configuration resource at '"+CONFIG_PROPERTIES+"'");
                 return;
             }
+            */
             Properties p = new Properties();
             try {
-                p.load(stream);
+                //p.load(stream);
                 p.setProperty("file.resource.loader.path", AddOnFiles.getTemplatesDirectory().getCanonicalPath());
                 Velocity.init( p );
                 velocityInitialized = true;

@@ -1,6 +1,7 @@
 package com.alcshare.docs;
 
 import com.alcshare.docs.util.AddOnFiles;
+import com.alcshare.docs.util.LineCopy;
 import com.alcshare.docs.util.Logging;
 import org.apache.commons.io.IOUtils;
 
@@ -43,18 +44,9 @@ public class MimeManager {
     }
 
     public static void initialize() {
-        File mimeFile = getMimeConfigFile();
-        if (!mimeFile.exists()) {
-            InputStream is = MimeManager.class.getResourceAsStream(MIME_CONFIG_NAME);
-            try {
-                FileOutputStream os = new FileOutputStream(mimeFile);
-                IOUtils.copy(is, os);
-                os.close();
-            } catch (IOException e) {
-                Logging.println("Error writing default file "+mimeFile.getAbsolutePath(), e);
-            }
-        } else {
-            Logging.println("Mime configuration file '"+mimeFile.getAbsolutePath()+"' is missing");
+        File target = getMimeConfigFile();
+        if (!target.exists()) {
+            LineCopy.copy(MimeManager.class.getResourceAsStream(MIME_CONFIG_NAME), target);
         }
 
         loadMimeTypes();

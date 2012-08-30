@@ -2,10 +2,9 @@ package com.alcshare.docs.servlets;
 
 import com.alcshare.docs.DocumentManager;
 import com.alcshare.docs.MimeManager;
+import com.alcshare.docs.templates.TemplateManager;
 import com.alcshare.docs.util.AddOnFiles;
 import com.alcshare.docs.util.Logging;
-import com.controlj.green.addonsupport.access.DirectAccess;
-import com.controlj.green.addonsupport.access.SystemConnection;
 import org.apache.commons.lang.time.StopWatch;
 
 import javax.servlet.ServletContextEvent;
@@ -23,7 +22,7 @@ public class Startup implements ServletContextListener
     {
         File configFile = new File(AddOnFiles.getConfigDirectory(), CONFIG_NAME);
 
-        if (!configFile.exists())
+        if (!configFile.exists())  // write config file if needed
         {
             StopWatch sw = new StopWatch();
             sw.start();
@@ -33,6 +32,7 @@ public class Startup implements ServletContextListener
         }
 
         MimeManager.initialize();  // create default mime type file if needed
+        TemplateManager.copyDefaultTemplates(AddOnFiles.getTemplatesDirectory()); // copy templates if needed
 
         if (configFile.exists()) {
             try {
