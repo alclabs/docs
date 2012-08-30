@@ -32,7 +32,7 @@ public class Startup implements ServletContextListener
         }
 
         MimeManager.initialize();  // create default mime type file if needed
-        TemplateManager.copyDefaultTemplates(AddOnFiles.getTemplatesDirectory()); // copy templates if needed
+        TemplateManager.copyDefaultTemplates(); // copy templates if needed
 
         if (configFile.exists()) {
             try {

@@ -1,9 +1,8 @@
 package com.alcshare.docs.templates;
 
-import com.alcshare.docs.util.LineCopy;
+import com.alcshare.docs.util.AddOnFiles;
+import com.alcshare.docs.util.FileResource;
 import com.alcshare.docs.util.Logging;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.LineIterator;
 
 import java.io.*;
 
@@ -11,14 +10,24 @@ import java.io.*;
  *
  */
 public class TemplateManager {
-    private static String[] templates = new String[] {"default.vm", "collapse.vm"};
+    private static String[] templateNames = new String[] {"default.vm", "collapse.vm"};
+    private static final FileResource[]  TEMPLATES = getFileResources(templateNames);
 
-    public static void copyDefaultTemplates(File targetDirectory) {
-        for (String template : templates) {
-            File target = new File(targetDirectory, template);
-            if (!target.exists()) {
-                LineCopy.copy(TemplateManager.class.getResourceAsStream(template), target);
+    public static void copyDefaultTemplates() {
+        for (FileResource template : TEMPLATES) {
+            try {
+                template.getFile();
+            } catch (IOException e) {
+                Logging.println("Error getting template ", e);
             }
         }
+    }
+
+    private static FileResource[] getFileResources(String[] names) {
+        FileResource[] result = new FileResource[names.length];
+        for (int i=0; i<names.length; i++) {
+            result[i] = new FileResource(AddOnFiles.getTemplatesDirectory(), names[i], TemplateManager.class, true);
+        }
+        return result;
     }
 }

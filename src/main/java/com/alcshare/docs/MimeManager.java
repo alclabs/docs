@@ -13,7 +13,7 @@ import java.util.Properties;
  */
 public class MimeManager {
     private static final String DEFAULT_MIME_TYPE = "text/plain";
-    private static final FileResource MIME_CONFIG = new FileResource(AddOnFiles.getConfigDirectory(), "mime.properties", MimeManager.class);
+    private static final FileResource MIME_CONFIG = new FileResource(AddOnFiles.getConfigDirectory(), "mime.properties", MimeManager.class, true);
 
     private static final Properties mappings = new Properties();
 
