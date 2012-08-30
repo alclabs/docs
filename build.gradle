@@ -25,6 +25,8 @@ dependencies {
    testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
 
    groovy 'org.codehaus.groovy:groovy:1.8.7'
+
+   js group: 'jquery', name: 'jquery', version: '1.7.1', classifier: 'min', ext: "js"
 }
 
 // The following strangeness is to get groovy dependencies only in the test configurations

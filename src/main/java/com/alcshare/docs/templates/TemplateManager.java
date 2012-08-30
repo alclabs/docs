@@ -11,7 +11,7 @@ import java.io.*;
  *
  */
 public class TemplateManager {
-    private static String[] templates = new String[] {"default.vm"};
+    private static String[] templates = new String[] {"default.vm", "collapse.vm"};
 
     public static void copyDefaultTemplates(File targetDirectory) {
         for (String template : templates) {
