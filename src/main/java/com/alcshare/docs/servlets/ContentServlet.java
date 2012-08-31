@@ -4,6 +4,7 @@ import com.alcshare.docs.DocumentManager;
 import com.alcshare.docs.DocumentReference;
 import com.alcshare.docs.util.AddOnFiles;
 import com.alcshare.docs.util.Logging;
+import com.controlj.green.addonsupport.AddOnInfo;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -51,6 +52,7 @@ public class ContentServlet extends HttpServlet{
         VelocityContext context = new VelocityContext();
         List<DocumentReference> references = DocumentManager.INSTANCE.getReferences(req);
         context.put("documents", references);
+        context.put("addonName", AddOnInfo.getAddOnInfo().getName());
         t.merge(context, resp.getWriter());
     }
 

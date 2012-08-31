@@ -2,20 +2,19 @@
 <script type="text/javascript">
 $(document).ready(function() {                                      
    $('#links').hide();
-   $('#trigger').click(function() {     
-      var img=$('#trigger img');
-      var src=img.attr('src');
-      img.attr('src',src=='img/expanded.png'? 'img/collapsed.png' : 'img/expanded.png');
-      $('#links').slideToggle(300); 
+   $('#trigger').click(function() {  
+      $(this).toggleClass('collapsed');
+      $(this).next().slideToggle(300); 
    });
 });
 </script>
 <style type="text/css">
     #links {padding-left: 15px;}
-    #trigger img { padding-right:5px; }
+    .expanded { background: transparent url(/docs/img/expanded.png)  center left no-repeat; padding-left:14px; display:inline-block;}
+    .collapsed { background: transparent url(/docs/img/collapsed.png)  center left no-repeat; padding-left:14px; display:inline-block;}
 </style>
 #if (!$documents.isEmpty())
-    <div id="trigger"><img src="img/collapsed.png"/>Documentation:</div>
+    <div id="trigger" class="collapsed expanded">Documentation:</div>
     <div id="links">
     #foreach( $doc in $documents )
         <div><a target="_blank" href="$doc.URL">$doc.Title</a></div>

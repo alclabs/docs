@@ -113,14 +113,23 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
 
     <h3>templates</h3>
     <p>
-        The private/templates directory can contain optional formatting templates to render the add-on content
-        in the WebApp Content control on a graphic page in an alternate format.  These are "Velocity Templates".
-        While most changes may be accomplished by simply modifying one of the standard templates, there is
-        a great deal more information on formatting Velocity Templates
+        The private/templates directory contains the formatting templates used to render the add-on content
+        in the WebApp Content control on a graphic page.  By default, the add-on uses &quot;default.vm&quot;
+        which just provides a list of plain links.  Another template, &quot;collapse.vm&quot; is also provided
+        which initially collapses the list of links and expands when the icon is clicked.  To use the collapse
+        template, add a style parameter to the ViewBuilder WebApp Content control with a value of &quot;collapse.vm&quot;.
+    </p>
+    <p>
+        These are "Velocity Templates". You may modify one of the standard templates, or copy it as a starting place.
+        If you delete one of the standard templates, it will be recreated when the add-on is started again.
+        There is a great deal more information on formatting Velocity Templates
         <a target="_blank" href="http://velocity.apache.org/engine/releases/velocity-1.7/user-guide.html">on the Velocity project site</a>.
-        The docs add-on provides a single variable, <span class="examp">$documents</span>.  This provides a list
-        of attached documents for the current location.  An example template that demonstrates some basic
-        features of the templating language is shown below:
+        The docs add-on provides a few basic variables to get to important information.  The <span class="examp">$documents</span>
+        variable provides a list of attached documents for the current location.  The <span class="examp">$addonName</span>
+        variable provides the name of the current add-on (which may be needed when formatting some URLs).
+    </p>
+    <p>
+        An example template that demonstrates some basic features of the templating language is shown below:
     </p>
     <pre>&lt;style type="text/css">
     .links {padding-left: 15px;}
