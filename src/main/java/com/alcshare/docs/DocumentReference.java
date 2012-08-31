@@ -100,7 +100,11 @@ public class DocumentReference
     public String get(String columnName) {
         String columnValue = extraColumns.get(columnName);
         if (columnValue == null) {
-            return "";  //todo - figure out a better way to handle errors - how does velocity handle exceptions?
+            if (columnName.equalsIgnoreCase("title")) {
+                return getTitle();
+            } else if (columnName.equalsIgnoreCase("url")) {
+                return getURL();
+            } else return "";  //todo - figure out a better way to handle errors - how does velocity handle exceptions?
         }
         return columnValue;
     }

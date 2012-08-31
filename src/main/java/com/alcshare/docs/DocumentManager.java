@@ -21,7 +21,7 @@ public enum DocumentManager {
 
     private static String[] defaultHeader = new String[]{"Reference Path", "Display Path", "Title", "Document Path", "Path Type"};
 
-    private final HashMap<String,List<DocumentReference>> docRefs = new HashMap<String,List<DocumentReference>>();
+    private final HashMap<String,DocumentList> docRefs = new HashMap<String,DocumentList>();
     public void loadConfiguration(File configFile) throws IOException, SystemException, ActionExecutionException {
         SystemConnection connection = DirectAccess.getDirectAccess().getRootSystemConnection();
         loadConfigurationInternal(new FileReader(configFile), connection);
@@ -33,10 +33,10 @@ public enum DocumentManager {
 
     private static class LoadConfigurationAction implements ReadAction {
         private CSVReader reader;
-        private HashMap<String, List<DocumentReference>> docRefs;
+        private HashMap<String, DocumentList> docRefs;
         private String[] customColumns = new String[0];
 
-        public LoadConfigurationAction(Reader reader, HashMap<String,List<DocumentReference>> docRefs) {
+        public LoadConfigurationAction(Reader reader, HashMap<String,DocumentList> docRefs) {
             this.reader = new CSVReader(reader);
             this.docRefs = docRefs;
         }
@@ -111,11 +111,11 @@ public enum DocumentManager {
             Location loc = ref.getLocation();
             String luString = loc.getPersistentLookupString(true);
 
-            List<DocumentReference> refList;
+            DocumentList refList;
             synchronized (docRefs) {
                 refList = docRefs.get(luString);
                 if (refList == null) {
-                    refList = new ArrayList<DocumentReference>();
+                    refList = new DocumentList();
                     docRefs.put(luString, refList);
                 }
             }
@@ -142,9 +142,9 @@ public enum DocumentManager {
 
     private static class WriteConfigurationAction implements ReadAction {
         private final CSVWriter output;
-        private final HashMap<String, List<DocumentReference>> docRefs;
+        private final HashMap<String, DocumentList> docRefs;
 
-        public WriteConfigurationAction(Writer output, HashMap<String, List<DocumentReference>> docRefs) {
+        public WriteConfigurationAction(Writer output, HashMap<String,DocumentList> docRefs) {
             this.output = new CSVWriter(output);
             this.docRefs = docRefs;
         }
@@ -236,7 +236,7 @@ public enum DocumentManager {
         }
     }
 
-    private static List<DocumentReference> getReferencesForLocation(String locationString, HashMap<String,List<DocumentReference>> docRefs) {
+    private static List<DocumentReference> getReferencesForLocation(String locationString, HashMap<String,DocumentList> docRefs) {
         List<DocumentReference> result = Collections.emptyList();
 
         List<DocumentReference> referenceList;
