@@ -2,8 +2,7 @@
 <script type="text/javascript" src="js/jquery-1.7.1-min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {                                      
-   $('.collapsed').next().hide();
-   $('.expanded').click(function() {  
+   $('.expanded').click(function() {
       $(this).toggleClass('collapsed');
       $(this).next().slideToggle(300); 
    });
@@ -11,8 +10,9 @@ $(document).ready(function() {
 </script>
 <style type="text/css">
     .indent { padding-left: 15px; }
-    .expanded { background: transparent url(img/expanded.png)  center left no-repeat; padding-left:14px;}
-    .collapsed { background: transparent url(img/collapsed.png)  center left no-repeat; padding-left:14px;}
+    .expanded { background: transparent url(content/img/expanded.png)  center left no-repeat; padding-left:14px;}
+    .collapsed { background: transparent url(content/img/collapsed.png)  center left no-repeat; padding-left:14px;}
+    .indent { display:none; }
 </style>
 #if (!$documents.isEmpty())
     #set ($map=$documents.groupBy("Category"))

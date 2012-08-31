@@ -9,50 +9,51 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  */
 public class AddOnFiles {
-    private static final AtomicReference<File> addOnPrivateFile = new AtomicReference<File>();
-    private static final AtomicReference<File> addOnDocBaseFile = new AtomicReference<File>();
-    private static final AtomicReference<File> addOnConfigBaseFile = new AtomicReference<File>();
-    private static final AtomicReference<File> addOnTemplateBaseFile = new AtomicReference<File>();
+    private static final AtomicReference<File> privateDirectoryReference = new AtomicReference<File>();
+    private static final AtomicReference<File> docDirectoryReference = new AtomicReference<File>();
+    private static final AtomicReference<File> configDirectoryReference = new AtomicReference<File>();
+    private static final AtomicReference<File> templateDirectoryReference = new AtomicReference<File>();
+    private static final AtomicReference<File> imageDirectoryReference = new AtomicReference<File>();
 
     public static File getDocDirectory() {
-        File docBaseFile = addOnDocBaseFile.get();
-        if (docBaseFile  == null) {
-            docBaseFile = new File(getAddOnPrivateDirectory(), "docs");
-            docBaseFile.mkdirs();
-            addOnDocBaseFile.set(docBaseFile);
-        }
-        return docBaseFile;
+        return getDirectoryHelper("docs", docDirectoryReference);
     }
 
     public static File getConfigDirectory() {
-        File configBaseFile = addOnConfigBaseFile.get();
-        if (configBaseFile  == null) {
-            configBaseFile = new File(getAddOnPrivateDirectory(), "config");
-            configBaseFile.mkdirs();
-            addOnConfigBaseFile.set(configBaseFile);
-        }
-        return configBaseFile;
+        return getDirectoryHelper("config", configDirectoryReference);
     }
     
     public static File getTemplatesDirectory() {
-        File templatesBaseFile = addOnTemplateBaseFile.get();
-        if (templatesBaseFile == null) {
-            templatesBaseFile = new File(getAddOnPrivateDirectory(), "templates");
-            templatesBaseFile.mkdirs();
-            addOnTemplateBaseFile.set(templatesBaseFile);
+        return getDirectoryHelper("templates", templateDirectoryReference);
+    }
+
+    public static File getImageDirectory() {
+        return getDirectoryHelper("img", getDocDirectory(), imageDirectoryReference);
+    }
+
+    private static File getDirectoryHelper(String name, AtomicReference<File> ref) {
+        return getDirectoryHelper(name, getAddOnPrivateDirectory(), ref);
+    }
+
+    private static File getDirectoryHelper(String name, File base, AtomicReference<File> ref) {
+        File directory = ref.get();
+        if (directory == null) {
+            directory = new File(base, name);
+            directory.mkdirs();
+            ref.set(directory);
         }
-        return templatesBaseFile;
+        return directory;
     }
 
 
     private static File getAddOnPrivateDirectory() {
-        File privateFile = addOnPrivateFile.get();
+        File privateFile = privateDirectoryReference.get();
         if (privateFile == null) {
             AddOnInfo aoi = AddOnInfo.getAddOnInfo();
             File systemFile = aoi.getPublicDir().getParentFile().getParentFile();
             String relPath = "webapp_data/"+aoi.getName()+"/private";
             privateFile = new File(systemFile, relPath);
-            addOnPrivateFile.set(privateFile);
+            privateDirectoryReference.set(privateFile);
         }
         return privateFile;
     }

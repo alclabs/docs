@@ -10,7 +10,7 @@ import java.io.*;
  *
  */
 public class TemplateManager {
-    private static String[] templateNames = new String[] {"default.vm", "collapse.vm"};
+    private static String[] templateNames = new String[] {"default.vm", "collapse.vm", "group.vm"};
     private static final FileResource[]  TEMPLATES = getFileResources(templateNames);
 
     public static void copyDefaultTemplates() {

@@ -75,7 +75,7 @@ public class FileResource {
         return resourceFile.getAbsolutePath();
     }
 
-    private void extractIfNeeded() throws IOException {
+    public void extractIfNeeded() throws IOException {
         if (!resourceFile.exists()) {
             try {
                 extractResource();
