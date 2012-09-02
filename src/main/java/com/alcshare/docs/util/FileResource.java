@@ -3,8 +3,11 @@ package com.alcshare.docs.util;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 
+import javax.servlet.ServletContext;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.*;
 
 /**
  * This class abstracts a File that, if not present, can have it's default copied from
@@ -13,19 +16,19 @@ import java.net.URL;
 public class FileResource {
     private final File resourceFile;
     private final URL defaultResourceURL;
-    private final boolean textFile;
+    private final boolean isText;
 
     /**
      * Use this constructor to have the most flexibility regarding where the default
      * file comes from.
      * @param resourceFile The file on disk which this instance represents.
      * @param defaultResourceURL The URL to the default file contents.
-     * @param textFile true if the resource is a text file
+     * @param isText true if the resource is a text file
      */
-    public FileResource(File resourceFile, URL defaultResourceURL, boolean textFile) {
+    public FileResource(File resourceFile, URL defaultResourceURL, boolean isText) {
         this.resourceFile = resourceFile;
         this.defaultResourceURL = defaultResourceURL;
-        this.textFile = textFile;
+        this.isText = isText;
     }
 
     /**
@@ -34,10 +37,10 @@ public class FileResource {
      * in the same package as the resource class.
      * @param resourceFile The file on disk which this instance represents.
      * @param resourceClass A class whose classloader & package is used to find the default file.
-     * @param textFile true if the resource is a text file
+     * @param isText true if the resource is a text file
      */
-    public FileResource(File resourceFile, Class resourceClass, boolean textFile) {
-        this(resourceFile, resourceClass.getResource(resourceFile.getName()), textFile);
+    public FileResource(File resourceFile, Class resourceClass, boolean isText) {
+        this(resourceFile, resourceClass.getResource(resourceFile.getName()), isText);
     }
 
     /**
@@ -49,10 +52,10 @@ public class FileResource {
      * @param resourceDir The directory where the resource file is located.
      * @param resourceFilename The name of the resource file.
      * @param resourceClass A class whose classloader & package is used to find the default file.
-     * @param textFile true if the resource is a text file
+     * @param isText true if the resource is a text file
      */
-    public FileResource(File resourceDir, String resourceFilename, Class resourceClass, boolean textFile) {
-        this(new File(resourceDir, resourceFilename), resourceClass, textFile);
+    public FileResource(File resourceDir, String resourceFilename, Class resourceClass, boolean isText) {
+        this(new File(resourceDir, resourceFilename), resourceClass, isText);
     }
 
     public File getFile() throws IOException {
@@ -85,13 +88,43 @@ public class FileResource {
         }
     }
 
+    public static Collection<FileResource> getFileResourcesBeneathContextPath(ServletContext context,
+                                                       String contextPath, File targetDir, boolean isText) {
+        List<FileResource> result = new ArrayList<FileResource> ();
+        Set<String> resourcePaths = context.getResourcePaths(contextPath);
+        for (String path : resourcePaths) {
+            if (!path.startsWith(contextPath)) {
+                Logging.println("Error getting resource - unexpected path from context.getResourcePaths.  Returned '"+
+                    path+"' from '"+ contextPath+"'");
+                continue;
+            }
+            int index = contextPath.length();
+
+            String name = path.substring(index + 1);
+
+            try {
+                result.add(new FileResource(new File(targetDir, name),
+                        context.getResource(path), isText));
+            } catch (MalformedURLException e) {
+                Logging.println("Error getting resource", e);
+            }
+        }
+        return result;
+    }
+
+    public static void extractIfNeeded(Collection<FileResource> collection) throws IOException {
+        for (FileResource fileResource : collection) {
+            fileResource.extractIfNeeded();
+        }
+    }
+
     private void extractResource() throws IOException {
         InputStream is = null;
         FileOutputStream os = null;
         try {
             is = defaultResourceURL.openStream();
             os = new FileOutputStream(resourceFile);
-            if (textFile) {
+            if (isText) {
                 copyTextFile(is, resourceFile);
             } else {
                 IOUtils.copy(is, os);
@@ -128,5 +161,7 @@ public class FileResource {
         }
 
     }
+
+
 
 }

@@ -5,7 +5,9 @@ import com.alcshare.docs.util.FileResource;
 import com.alcshare.docs.util.Logging;
 import org.apache.commons.io.IOUtils;
 
+import javax.servlet.ServletContext;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.util.Properties;
 
 /**
@@ -13,7 +15,7 @@ import java.util.Properties;
  */
 public class MimeManager {
     private static final String DEFAULT_MIME_TYPE = "text/plain";
-    private static final FileResource MIME_CONFIG = new FileResource(AddOnFiles.getConfigDirectory(), "mime.properties", MimeManager.class, true);
+    private static FileResource MIME_CONFIG;
 
     private static final Properties mappings = new Properties();
 
@@ -36,7 +38,15 @@ public class MimeManager {
         }
     }
 
-    public static void initialize() {
-        loadMimeTypes();
+    public static void initialize(ServletContext context) {
+        if (MIME_CONFIG == null) {
+            try {
+                MIME_CONFIG = new FileResource(AddOnFiles.getConfigDirectory(),
+                    context.getResource("/WEB-INF/config/mime.properties"), true);
+                loadMimeTypes();
+            } catch (MalformedURLException e) {
+                Logging.println("Error getting default mime.properties", e);
+            }
+        }
     }
 }
