@@ -3,7 +3,6 @@ package com.alcshare.docs;
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.alcshare.docs.util.Logging;
-import com.controlj.green.addonsupport.InvalidConnectionRequestException;
 import com.controlj.green.addonsupport.access.*;
 import com.controlj.green.addonsupport.web.WebContext;
 import com.controlj.green.addonsupport.web.WebContextFactory;
@@ -208,6 +207,13 @@ public enum DocumentManager {
 
             }
         }
+    }
+
+    public List<DocumentReference> getAllReferences() {
+        List<DocumentReference> result = Collections.emptyList();
+        for (DocumentList documentList : docRefs.values())
+            result.addAll(documentList);
+        return result;
     }
 
     public List<DocumentReference> getReferences(final HttpServletRequest request) {

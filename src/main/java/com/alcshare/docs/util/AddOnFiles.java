@@ -49,9 +49,8 @@ public class AddOnFiles {
     private static File getAddOnPrivateDirectory() {
         File privateFile = privateDirectoryReference.get();
         if (privateFile == null) {
-            AddOnInfo aoi = AddOnInfo.getAddOnInfo();
-            File systemFile = aoi.getPublicDir().getParentFile().getParentFile();
-            String relPath = "webapp_data/"+aoi.getName()+"/private";
+            File systemFile = AddOnInfoHelper.getPublicDir().getParentFile().getParentFile();
+            String relPath = "webapp_data/"+AddOnInfoHelper.getAddonName()+"/private";
             privateFile = new File(systemFile, relPath);
             privateDirectoryReference.set(privateFile);
         }

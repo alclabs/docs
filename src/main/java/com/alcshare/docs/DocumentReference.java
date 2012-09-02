@@ -15,7 +15,6 @@ import java.util.Map;
  */
 public class DocumentReference
 {
-
     private String gqlPath;
     private String title;
     private String docPath;
