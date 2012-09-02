@@ -1,10 +1,13 @@
 package com.alcshare.docs;
 
+import com.alcshare.docs.util.AddOnFiles;
+import com.alcshare.docs.util.AddOnInfoHelper;
 import com.alcshare.docs.util.Logging;
 import com.controlj.green.addonsupport.AddOnInfo;
 import com.controlj.green.addonsupport.access.Location;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -21,7 +24,6 @@ public class DocumentReference
     private String pathType;
     private Location location;
     private Map<String,String> extraColumns;
-    private static String ADDON_NAME;
 
 
     // todo - field for specifying order of documents
@@ -37,32 +39,39 @@ public class DocumentReference
         this.extraColumns = extraColumns;
     }
 
-    public String getGqlPath()
-    {
+    public String getGqlPath() {
         return gqlPath;
     }
 
-    public String getTitle()
-    {
+    public String getTitle() {
         return title;
     }
 
-    public String getDocPath()
-    {
+    public String getDocPath() {
         return docPath;
     }
 
+    public File getDocFile() {
+        return canonicalize(new File(AddOnFiles.getDocDirectory(), getDocPath()));
+    }
+
+    private File canonicalize(File file) {
+        try {
+            return file.getCanonicalFile();
+        } catch (IOException e) {
+            return file;
+        }
+    }
+
+    // returns true if path type is not DOC, or if it is DOC and getDocFile().exists()
+    public boolean checkDocExists() {
+        return !isPathTypeDoc() || getDocFile().exists();
+    }
 
     public String getURL() {
         if (isPathTypeDoc()) {
-            if (ADDON_NAME == null) {
-                try {
-                    ADDON_NAME = AddOnInfo.getAddOnInfo().getName();
-                } catch (Throwable th) { ADDON_NAME="TEST"; } // AddOnInfo not available during unit tests
-            }
-            URI uri;
             try {
-                uri = new URI(null, null, "/"+ADDON_NAME+"/content"+getNormalizedDocPath(), null);
+                URI uri = new URI(null, null, "/" + AddOnInfoHelper.getAddonName() + "/content" + getNormalizedDocPath(), null);
                 return uri.toString();
             } catch (URISyntaxException e) {
                 Logging.println("Error formatting document URI", e);

@@ -33,22 +33,9 @@ public class MissingDocumentCheck implements Check
 
     @Nullable private Result performCheckOnRef(@NotNull DocumentReference reference)
     {
-        if (reference.getPathType().equalsIgnoreCase("DOC"))
-        {
-            File file = canonicalize(new File(AddOnFiles.getDocDirectory(), reference.getDocPath()));
-            if (!file.exists())
-                return new Result(reference, "Missing document.  Referenced from \"%1$s\", file \"%2$s\" could not be found (looked for it at \"" + file.getAbsolutePath() + "\"");
-        }
+        if (!reference.checkDocExists())
+            return new Result(reference, "Missing document.  Referenced from \"%1$s\", file \"%2$s\" could not be found (looked for it at \"" + reference.getDocFile().getAbsolutePath() + "\"");
         return null;
-    }
-
-    private File canonicalize(File file)
-    {
-        try {
-            return file.getCanonicalFile();
-        } catch (IOException e) {
-            return file;
-        }
     }
 
     public class Result implements Check.Result

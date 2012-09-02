@@ -19,7 +19,7 @@ class FileResourceTest extends Specification {
         then:
             context.getResourcePaths("/WEB-INF/img") >> ["/WEB-INF/img/test.png", "/WEB-INF/img/deeper/deep.png"]
             resources.size() == 2
-            resources[0].resourceFile.path == "/target/test.png"
-            resources[1].resourceFile.path == "/target/deeper/deep.png"
+            resources[0].resourceFile.path.replaceAll("\\\\", "/") == "/target/test.png"
+            resources[1].resourceFile.path.replaceAll("\\\\", "/") == "/target/deeper/deep.png"
     }
 }

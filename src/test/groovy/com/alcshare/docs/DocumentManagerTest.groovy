@@ -3,11 +3,16 @@ package com.alcshare.docs
 import com.controlj.green.addonsupport.access.Location
 import com.controlj.green.addonsupport.access.SystemAccess
 import spock.lang.Specification
+import com.alcshare.docs.util.AddOnInfoHelper
 
 /**
  * 
  */
 class DocumentManagerTest extends Specification {
+    def setup() {
+       AddOnInfoHelper.addonNameRef.set("TEST")
+    }
+
     def testBasicLoadConfiguration() {
         given:
            HashMap<String,List<DocumentReference>> docRefs = new HashMap<String,List<DocumentReference>>();
