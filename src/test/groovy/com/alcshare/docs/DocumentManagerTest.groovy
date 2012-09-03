@@ -20,7 +20,7 @@ class DocumentManagerTest extends Specification {
            Location location = Mock();
 
            StringReader testConfig = new StringReader('''\
-Reference Path,Display Path,Title,Document Path,Path Type
+Reference Path,Display Path,Title,Document Path,Path Type,Category
 "#ahu1","This is ,ignored","This is a test","one/two/three"
 ''')
            def action = new DocumentManager.LoadConfigurationAction(testConfig, docRefs)
@@ -41,7 +41,7 @@ Reference Path,Display Path,Title,Document Path,Path Type
            result.URL == "/TEST/content/one/two/three"
     }
 
-    def testTwoCustomColumns() {
+    def testCustomColumn() {
         given:
            HashMap<String,List<DocumentReference>> docRefs = new HashMap<String,List<DocumentReference>>();
            SystemAccess access = Mock();

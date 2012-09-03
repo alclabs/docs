@@ -18,7 +18,8 @@ import java.util.*;
 public enum DocumentManager {
     INSTANCE;
 
-    private static String[] defaultHeader = new String[]{"Reference Path", "Display Path", "Title", "Document Path", "Path Type"};
+    private static final String[] defaultHeader = new String[]{"Reference Path", "Display Path", "Title", "Document Path", "Path Type", "Category"};
+    private static final int REQUIRED_COLUMNS = 4;  // later ones are optional
 
     private final HashMap<String,DocumentList> docRefs = new HashMap<String,DocumentList>();
     public void loadConfiguration(File configFile) throws IOException, SystemException, ActionExecutionException {
@@ -48,10 +49,11 @@ public enum DocumentManager {
             clearConfiguration();
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
-                if (nextLine.length >= defaultHeader.length-1) {
+                if (nextLine.length >= REQUIRED_COLUMNS) {
                     try {
                         DocumentReference ref = new DocumentReference(nextLine[0], nextLine[2], nextLine[3],
-                                nextLine.length>4 ? nextLine[4] : null,
+                                nextLine.length > REQUIRED_COLUMNS ? nextLine[4] : "",
+                                nextLine.length > REQUIRED_COLUMNS +1 ? nextLine[5] : "",
                                 findLocation(access, nextLine[0]),
                                 loadExtraColumns(nextLine));
                         addRef(ref);
@@ -165,7 +167,8 @@ public enum DocumentManager {
                     docRefList = docRefs.get(lus);
                 }
                 if (docRefList != null) {
-                    // todo - insert existing stuff
+                    // todo - insert existing stuff. Right now this only works when creating a new blank config
+                    // but eventually we want to update one too.
                 } else {
                     writeDefaultRow(location);
                 }

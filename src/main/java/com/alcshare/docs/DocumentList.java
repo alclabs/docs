@@ -14,7 +14,7 @@ public class DocumentList extends ArrayList<DocumentReference> {
         HashMap<String,DocumentList> result = new HashMap<String, DocumentList>();
 
         for (DocumentReference next : this) {
-            String val = next.get(columnName);
+            String val = next.get(columnName).toString();
             if (val != null) {
                 addReference(result, val, next);
             } else {

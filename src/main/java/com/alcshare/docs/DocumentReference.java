@@ -22,6 +22,7 @@ public class DocumentReference
     private String title;
     private String docPath;
     private String pathType;
+    private String category;
     private Location location;
     private Map<String,String> extraColumns;
 
@@ -30,11 +31,12 @@ public class DocumentReference
     // todo - type and user specified columns
 
 
-    public DocumentReference(String gqlPath, String title, String docPath, String pathType, Location location, Map<String,String> extraColumns) {
+    public DocumentReference(String gqlPath, String title, String docPath, String pathType, String category, Location location, Map<String,String> extraColumns) {
         this.gqlPath = gqlPath;
         this.title = title;
         this.docPath = docPath;
         this.pathType = pathType;
+        this.category = category;
         this.location = location;
         this.extraColumns = extraColumns;
     }
@@ -90,6 +92,14 @@ public class DocumentReference
         else return pathType;
     }
 
+    public String getCategory() {
+        if (category!=null && category.length()>0) {
+            return category;
+        } else {
+            return "Uncategorized";
+        }
+    }
+
     private boolean isPathTypeDoc() {
         return (pathType == null || pathType.length()==0 || pathType.equalsIgnoreCase("doc"));
     }
@@ -105,14 +115,19 @@ public class DocumentReference
             return "/" + docPath;
         }
     }
-    public String get(String columnName) {
+    public Object get(String columnName) {
         String columnValue = extraColumns.get(columnName);
         if (columnValue == null) {
             if (columnName.equalsIgnoreCase("title")) {
                 return getTitle();
             } else if (columnName.equalsIgnoreCase("url")) {
                 return getURL();
-            } else return "";  //todo - figure out a better way to handle errors - how does velocity handle exceptions?
+            } else if (columnName.equalsIgnoreCase("category")) {
+                return getCategory();
+            } else if (columnName.equalsIgnoreCase("exists")) {
+                return checkDocExists();
+            }
+            else return "";  //todo - figure out a better way to handle errors - how does velocity handle exceptions?
         }
         return columnValue;
     }
