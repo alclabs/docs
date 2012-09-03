@@ -16,7 +16,7 @@ public class AddOnFiles {
     private static final AtomicReference<File> imageDirectoryReference = new AtomicReference<File>();
 
     public static File getDocDirectory() {
-        return getDirectoryHelper("docs", docDirectoryReference);
+        return getDirectoryHelper("content", docDirectoryReference);
     }
 
     public static File getConfigDirectory() {

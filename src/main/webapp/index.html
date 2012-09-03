@@ -37,7 +37,7 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
 </p>
 <ul>
     <li class="examp">config</li>
-    <li class="examp">docs</li>
+    <li class="examp">content</li>
     <li class="examp">templates</li>
 </ul>
 <div class="indent">
@@ -53,9 +53,9 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
         The first row must contain the column names and the first three columns must be named
         &quot;<span class="examp">Reference Path,Display Path,Title,Document Path,Path Type</span>&quot;.  An example docs.csv file is shown below.
     </p>
-    <pre>Reference Path,Display Path,Title,Document Path,Path Type
-#first_floor/main_conference_room,&quot;/Campus/Green Bldg/First Floor/Main Conference Room&quot;,&quot;As Built&quot;,ab/mcr_asbuilt.pdf
-#first_floor/main_conference_room,&quot;/Campus/Green Bldg/First Floor/Main Conference Room&quot;,&quot;Parts List&quot;,list/mcr_parts_list.txt
+    <pre>Reference Path,Display Path,Title,Document Path,Path Type,Category
+#first_floor/main_conference_room,&quot;/Campus/Green Bldg/First Floor/Main Conference Room&quot;,&quot;As Built&quot;,ab/mcr_asbuilt.pdf,DOC,As Built
+#first_floor/main_conference_room,&quot;/Campus/Green Bldg/First Floor/Main Conference Room&quot;,&quot;Parts List&quot;,list/mcr_parts_list.txt,DOC,BOM
 #ahu_1,&quot;/Campus/Green Bldg/East Wing/AHU 1&quot;,&quot;As Built&quot;,ab/ahu1_asbuilt.pdf</pre>
     <div class="indent">
         <h4>Reference Path</h4>
@@ -86,10 +86,16 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
         <h4>Path Type</h4>
         <p>
             This column defines the type of document path that is provided in the previous column.  If this column has
-            a value of &quot;doc&quot; (or is missing), then the previous column will be interpreted as a relative path
-            in the file system to the document of interest (with forward slashes (/) between directories).
+            a value of &quot;DOC&quot; (or is missing), then the previous column will be interpreted as a relative path
+            in the file system from the content directory to the document of interest (with forward slashes (/) between directories).
             This column may also have a value of &quot;URL&quot; if the document path is a URL to another web page.
-            If you do not have any extra columns, then this column is optional and &quot;doc&quot; is assumed.
+            If you do not have any extra columns, then this column is optional and &quot;DOC&quot; is assumed.
+        </p>
+
+        <h4>Category</h4>
+        <p>
+            This column is optional, but may be used to specify a user defined category for the document.  This
+            category is used by the <span class="examp">group.vm</span> style template to group documents by category.
         </p>
 
         <h4>Extra Columns</h4>
@@ -108,8 +114,8 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
         many typical document types, but it may be extended if necessary.
     </p>
 
-    <h3>docs</h3>
-    <p>The private/docs directory contains the documentation files that this add-on will provide links to.</p>
+    <h3>content</h3>
+    <p>The private/content directory contains the documentation files that this add-on will provide links to.</p>
 
     <h3>templates</h3>
     <p>
