@@ -146,7 +146,7 @@ public enum DocumentManager {
         private final HashMap<String, DocumentList> docRefs;
 
         public WriteConfigurationAction(Writer output, HashMap<String,DocumentList> docRefs) {
-            this.output = new CSVWriter(output);
+            this.output = new CSVWriter(output,',','"',System.getProperty("line.separator"));
             this.docRefs = docRefs;
         }
 
