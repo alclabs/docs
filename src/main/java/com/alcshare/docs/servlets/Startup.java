@@ -63,7 +63,7 @@ public class Startup implements ServletContextListener
 
     private void initWebResources(ServletContext context) {
         Collection<FileResource> imgFiles = FileResource.getFileResourcesBeneathContextPath(context,
-                "/WEB-INF/img", AddOnFiles.getImageDirectory(), false);
+                "/WEB-INF/content/img", AddOnFiles.getImageDirectory(), false);
         try {
             FileResource.extractIfNeeded(imgFiles);
         } catch (IOException e) {

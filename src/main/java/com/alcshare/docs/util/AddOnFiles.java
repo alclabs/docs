@@ -14,6 +14,7 @@ public class AddOnFiles {
     private static final AtomicReference<File> configDirectoryReference = new AtomicReference<File>();
     private static final AtomicReference<File> templateDirectoryReference = new AtomicReference<File>();
     private static final AtomicReference<File> imageDirectoryReference = new AtomicReference<File>();
+    private static final AtomicReference<File> jsDirectoryReference = new AtomicReference<File>();
 
     public static File getDocDirectory() {
         return getDirectoryHelper("content", docDirectoryReference);
@@ -29,6 +30,10 @@ public class AddOnFiles {
 
     public static File getImageDirectory() {
         return getDirectoryHelper("img", getDocDirectory(), imageDirectoryReference);
+    }
+
+    public static File getJSDirectory() {
+        return getDirectoryHelper("js", getDocDirectory(), jsDirectoryReference);
     }
 
     private static File getDirectoryHelper(String name, AtomicReference<File> ref) {

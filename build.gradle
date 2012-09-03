@@ -8,7 +8,7 @@ apply from: configurations.gradleScript.resolve().iterator().next()
 info {
   name = 'Docs'
   description = 'Documentation Manager'
-  version = '0.1 -' + new Date().format('yyyy/MM/dd kk:mm:ss')
+  version = 'Beta 1'// + new Date().format('yyyy/MM/dd kk:mm:ss')
   vendor = 'ALC Labs'
 }
 
@@ -25,8 +25,6 @@ dependencies {
    testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
 
    groovy 'org.codehaus.groovy:groovy:1.8.7'
-
-   js group: 'jquery', name: 'jquery', version: '1.7.1', classifier: 'min', ext: "js"
 }
 
 // The following strangeness is to get groovy dependencies only in the test configurations

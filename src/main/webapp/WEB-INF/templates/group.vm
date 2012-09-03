@@ -1,5 +1,5 @@
 ## This groups documents by a user added "Category" column
-<script type="text/javascript" src="js/jquery-1.7.1-min.js"></script>
+<script type="text/javascript" src="content/js/jquery-1.7.2-min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {                                      
    $('.expanded').click(function() {
