@@ -98,6 +98,9 @@ public class FileResource {
                     path+"' from '"+ contextPath+"'");
                 continue;
             }
+            if (contextPath.endsWith("/")) {
+                contextPath = contextPath.substring(0,contextPath.length()-1);
+            }
             int index = contextPath.length();
 
             String name = path.substring(index + 1);

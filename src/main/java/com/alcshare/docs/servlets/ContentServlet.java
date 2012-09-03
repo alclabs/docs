@@ -11,6 +11,7 @@ import org.apache.velocity.app.Velocity;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -27,7 +28,6 @@ import java.util.Properties;
  */
 public class ContentServlet extends HttpServlet{
     private static boolean velocityInitialized = false;
-    private static final String CONFIG_PROPERTIES = "/WEB-INF/velocityconfig.properties";
     private static final String DEFAULT_TEMPLATE = "default.vm";
     private static final String PARAM_STYLE = "style";
 
@@ -46,30 +46,24 @@ public class ContentServlet extends HttpServlet{
         }
         try {
             t = Velocity.getTemplate(style);
+            VelocityContext context = new VelocityContext();
+            List<DocumentReference> references = DocumentManager.INSTANCE.getReferences(req);
+            context.put("documents", references);
+            context.put("addonName", AddOnInfo.getAddOnInfo().getName());
+            t.merge(context, resp.getWriter());
         } catch (Exception e) {
             Logging.println("Error getting template for requested style '"+style+"'", e);
+            RequestDispatcher dispatcher = req.getSession().getServletContext().getRequestDispatcher("/WEB-INF/error.jsp");
+            req.setAttribute("style", style);
+            dispatcher.include(req, resp);
         }
-        VelocityContext context = new VelocityContext();
-        List<DocumentReference> references = DocumentManager.INSTANCE.getReferences(req);
-        context.put("documents", references);
-        context.put("addonName", AddOnInfo.getAddOnInfo().getName());
-        t.merge(context, resp.getWriter());
     }
 
 
     private void loadVelocity(ServletContext context) {
         if (!velocityInitialized) {
-            // Currently only using file resource loader, which is the default, so this config is no longer needed
-            /*
-            InputStream stream = context.getResourceAsStream(CONFIG_PROPERTIES);
-            if (stream == null) {
-                Logging.println("ERROR: Can't find velocity configuration resource at '"+CONFIG_PROPERTIES+"'");
-                return;
-            }
-            */
             Properties p = new Properties();
             try {
-                //p.load(stream);
                 p.setProperty("file.resource.loader.path", AddOnFiles.getTemplatesDirectory().getCanonicalPath());
                 Velocity.init( p );
                 velocityInitialized = true;

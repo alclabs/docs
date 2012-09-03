@@ -6,6 +6,7 @@ import com.alcshare.docs.templates.TemplateManager;
 import com.alcshare.docs.util.AddOnFiles;
 import com.alcshare.docs.util.FileResource;
 import com.alcshare.docs.util.Logging;
+import com.sun.xml.internal.ws.wsdl.writer.document.http.Address;
 import org.apache.commons.lang.time.StopWatch;
 
 import javax.servlet.ServletContext;
@@ -64,8 +65,11 @@ public class Startup implements ServletContextListener
     private void initWebResources(ServletContext context) {
         Collection<FileResource> imgFiles = FileResource.getFileResourcesBeneathContextPath(context,
                 "/WEB-INF/content/img", AddOnFiles.getImageDirectory(), false);
+        Collection<FileResource> jsFiles = FileResource.getFileResourcesBeneathContextPath(context,
+                "/WEB-INF/content/js", AddOnFiles.getJSDirectory(), false);
         try {
             FileResource.extractIfNeeded(imgFiles);
+            FileResource.extractIfNeeded(jsFiles);
         } catch (IOException e) {
             Logging.println("Error extracting images", e);
         }
