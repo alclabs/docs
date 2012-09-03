@@ -9,7 +9,7 @@ $(document).ready(function() {
 </script>
 <style type="text/css">
     #links { padding-left: 15px; display:none; }
-    .expanded { background: transparent url(content/img}/expanded.png)  center left no-repeat; padding-left:14px;}
+    .expanded { background: transparent url(content/img/expanded.png)  center left no-repeat; padding-left:14px;}
     .collapsed { background: transparent url(content/img/collapsed.png)  center left no-repeat; padding-left:14px;}
 </style>
 #if (!$documents.isEmpty())
