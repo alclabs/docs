@@ -2,12 +2,9 @@ package com.alcshare.docs.checks;
 
 import com.alcshare.docs.DocumentManager;
 import com.alcshare.docs.DocumentReference;
-import com.alcshare.docs.util.AddOnFiles;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +50,7 @@ public class MissingDocumentCheck implements Check
 
         Result(DocumentReference reference, String message)
         {
-            this(reference.getGqlPath(), reference.getDocPath(), message);
+            this(reference.getReferencePath(), reference.getDocPath(), message);
         }
 
         @NotNull @Override public String getText()

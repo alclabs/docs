@@ -3,14 +3,12 @@ package com.alcshare.docs;
 import com.alcshare.docs.util.AddOnFiles;
 import com.alcshare.docs.util.AddOnInfoHelper;
 import com.alcshare.docs.util.Logging;
-import com.controlj.green.addonsupport.AddOnInfo;
 import com.controlj.green.addonsupport.access.Location;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -18,7 +16,7 @@ import java.util.Map;
  */
 public class DocumentReference
 {
-    private String gqlPath;
+    private String referencePath;
     private String title;
     private String docPath;
     private String pathType;
@@ -31,8 +29,8 @@ public class DocumentReference
     // todo - type and user specified columns
 
 
-    public DocumentReference(String gqlPath, String title, String docPath, String pathType, String category, Location location, Map<String,String> extraColumns) {
-        this.gqlPath = gqlPath;
+    public DocumentReference(String referencePath, String title, String docPath, String pathType, String category, Location location, Map<String,String> extraColumns) {
+        this.referencePath = referencePath;
         this.title = title;
         this.docPath = docPath;
         this.pathType = pathType;
@@ -41,8 +39,8 @@ public class DocumentReference
         this.extraColumns = extraColumns;
     }
 
-    public String getGqlPath() {
-        return gqlPath;
+    public String getReferencePath() {
+        return referencePath;
     }
 
     public String getTitle() {

@@ -36,7 +36,7 @@ Reference Path,Display Path,Title,Document Path,Path Type,Category
            access.resolveGQLPath("#ahu1") >> location
            location.getPersistentLookupString(true) >> "DBID:1:1492"
            result.docPath == "one/two/three"
-           result.getGqlPath() == "#ahu1"
+           result.getReferencePath() == "#ahu1"
            result.title == "This is a test"
            result.URL == "/TEST/content/one/two/three"
     }
@@ -64,7 +64,7 @@ another/vav,"This is ignored",Title2,"path with a space",doc,type2,blue
         then:
            access.resolveGQLPath(_) >> location
            location.getPersistentLookupString(true) >>> ["DBID:1:1492", "DBID:1:1234"]
-           result1.gqlPath == "#ahu1"
+           result1.referencePath == "#ahu1"
            result1.title == "This is a test"
            result1.docPath == "/one/two/three"
            result1.get('Category') == 'type1'
@@ -72,7 +72,7 @@ another/vav,"This is ignored",Title2,"path with a space",doc,type2,blue
            result1.URL == "/TEST/content/one/two/three"
 
 
-           result2.gqlPath == "another/vav"
+           result2.referencePath == "another/vav"
            result2.title == "Title2"
            result2.docPath == "path with a space"
            result2.get('Category') == 'type2'

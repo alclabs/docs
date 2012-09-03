@@ -6,12 +6,21 @@
     <link rel="stylesheet" type="text/css" href="help/css/contentstyle.css"/>
 </head>
 <body>
+<img src="help/img/documents_100.png" style="float:left; padding-right:15px;">
 <h1>Docs - the Documentation Add-On</h1>
 <p>This add-on is intended to provide a simple mechanism to manage and display the documentation associated with
 a WebCTRL system.  There are numerous as-builts, network diagrams, and other documents that are associated with
-WebCTRL locations, but are awkward to attach as graphics.</p>
+WebCTRL locations, but are awkward to attach as graphics.  This add-on provides a simple way to include
+a large number of documents in a system and associate different documents with different locations in WebCTRL
+without requiring custom view files for each location.</p>
 
-<h3>Status:</h3>
+<h2 style="clear:left;">Prerequisites</h2>
+<p>
+    This add-on works with WebCTRL 5.5 or later.
+    It also requires the Enterprise Integration optional package on your license.
+</p>
+
+<h2>Status:</h2>
 <p>This is a very early version of this add-on which, while functional, is really intended to get some real
 world feedback about the features needed to manage documents in a WebCTRL system.  It currently has no user
 interface and both the documents and their mapping to WebCTRL locations must be managed by manipulating files
@@ -47,11 +56,12 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
         <span class="examp">docs.csv</span>.  This is the file that enumerates the documents and the locations
         where they are attached. It is a simple text file of comma separated values.  This file should be easy to
         edit with a spreadsheet program like Excel. If this file does not exist when the add-on is started, a
-        starting file with only values for refpath and disppath will be created.
+        starting file with only values for Reference Path and Display Path will be created.
     </p>
     <p>
-        The first row must contain the column names and the first three columns must be named
-        &quot;<span class="examp">Reference Path,Display Path,Title,Document Path,Path Type</span>&quot;.  An example docs.csv file is shown below.
+        The first row must contain the column names and the first six columns must be named
+        &quot;<span class="examp">Reference Path,Display Path,Title,Document Path,Path Type,Category</span>&quot;.
+        You may add extra columns with your own unique information. An example docs.csv file is shown below.
     </p>
     <pre>Reference Path,Display Path,Title,Document Path,Path Type,Category
 #first_floor/main_conference_room,&quot;/Campus/Green Bldg/First Floor/Main Conference Room&quot;,&quot;As Built&quot;,ab/mcr_asbuilt.pdf,DOC,As Built
@@ -83,7 +93,7 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
             column for more information.
         </p>
 
-        <h4>Path Type</h4>
+        <h4>Path Type - (optional)</h4>
         <p>
             This column defines the type of document path that is provided in the previous column.  If this column has
             a value of &quot;DOC&quot; (or is missing), then the previous column will be interpreted as a relative path
@@ -92,19 +102,19 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
             If you do not have any extra columns, then this column is optional and &quot;DOC&quot; is assumed.
         </p>
 
-        <h4>Category</h4>
+        <h4>Category - (optional)</h4>
         <p>
             This column is optional, but may be used to specify a user defined category for the document.  This
             category is used by the <span class="examp">group.vm</span> style template to group documents by category.
         </p>
 
-        <h4>Extra Columns</h4>
+        <h4>Extra Columns - (optional)</h4>
         <p>
-            You can add your own custom columns here. The name you use for the column header can be used to reference
+            You can add your own custom columns here. The names you use for the column headers can be used to reference
             it from a custom template.
         </p>
     </div>
-    <p>Note that you should use multiple rows with the same refpath to attach multiple document files to
+    <p>Note that you should use multiple rows with the same Reference Path to attach multiple document files to
     the same location.</p>
 
     <p>
@@ -122,8 +132,10 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
         The private/templates directory contains the formatting templates used to render the add-on content
         in the WebApp Content control on a graphic page.  By default, the add-on uses &quot;default.vm&quot;
         which just provides a list of plain links.  Another template, &quot;collapse.vm&quot; is also provided
-        which initially collapses the list of links and expands when the icon is clicked.  To use the collapse
+        which initially collapses the list of links and expands when the heading is clicked.  To use the collapse
         template, add a style parameter to the ViewBuilder WebApp Content control with a value of &quot;collapse.vm&quot;.
+        Theres is one more standard template, &quot;group.vm&quot;, that will group documents by the values in the
+        Category column.
     </p>
     <p>
         These are "Velocity Templates". You may modify one of the standard templates, or copy it as a starting place.
@@ -158,6 +170,19 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
         If you added custom columns to your docs.csv file, you may refer to the content of that column
         using the header name.  For example, if you added a column with a header of &quot;type&quot;, then
         you could refer to the value in that column with <span class="examp">$doc.type</span>
+    </p>
+    <p>
+        The following properties (case insensitive) are available on each $doc:
+        <ul>
+            <li>title - the title to be displayed for the document link</li>
+            <li>url - the URL used to display the document</li>
+            <li>referencePath - the value of the Reference Path column</li>
+            <li>category - the value of the Category column</li>
+            <li>exists - &quot;true&quot; if the document exists, &quot;false&quot; otherwise</li>
+        </ul>
+        The values in any extra user added columns may be retrieved by using the column header name as
+        the property.  If the name has a space in it, you should wrap the property reference in curly
+        brackets like &quot;${my column}&quot;.
     </p>
     <p>
         If you create your own template, place the file in the templates directory and refer to it using the
