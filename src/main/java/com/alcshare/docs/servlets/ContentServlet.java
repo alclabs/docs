@@ -40,7 +40,7 @@ public class ContentServlet extends HttpServlet{
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String style = req.getParameter(PARAM_STYLE);
-        Template t = null;
+        Template t;
         if (style == null) {
             style = DEFAULT_TEMPLATE;
         }
@@ -67,7 +67,6 @@ public class ContentServlet extends HttpServlet{
                 p.setProperty("file.resource.loader.path", AddOnFiles.getTemplatesDirectory().getCanonicalPath());
                 Velocity.init( p );
                 velocityInitialized = true;
-                Logging.println("Velocity subsystem initialized");
             } catch (IOException e) {
                 Logging.println("Error initializing velocity properties", e);
             }

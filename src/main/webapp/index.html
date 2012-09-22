@@ -95,11 +95,15 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
 
         <h4>Path Type - (optional)</h4>
         <p>
-            This column defines the type of document path that is provided in the previous column.  If this column has
-            a value of &quot;DOC&quot; (or is missing), then the previous column will be interpreted as a relative path
-            in the file system from the content directory to the document of interest (with forward slashes (/) between directories).
-            This column may also have a value of &quot;URL&quot; if the document path is a URL to another web page.
-            If you do not have any extra columns, then this column is optional and &quot;DOC&quot; is assumed.
+            This column defines the type of document path that is provided in the previous column.
+            Possible values:
+            <ul>
+                <li>DOC (default if blank)- document path is interpreted as a relative path in the file system from the content
+                directory to the document of interest (with forward slashes (/) between directories).</li>
+                <li>URL - document path is a URL to another web page.</li>
+                <li>DIR - document path is a relative path in the file system from the content directory to a subdirectory.
+                All the files in this directory will be listed.  The title will be the file name without the extension.</li>
+            </ul>
         </p>
 
         <h4>Category - (optional)</h4>
