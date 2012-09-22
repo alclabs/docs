@@ -2,10 +2,12 @@ package com.alcshare.docs;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
+import com.alcshare.docs.util.AddOnFiles;
 import com.alcshare.docs.util.Logging;
 import com.controlj.green.addonsupport.access.*;
 import com.controlj.green.addonsupport.web.WebContext;
 import com.controlj.green.addonsupport.web.WebContextFactory;
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,12 +53,17 @@ public enum DocumentManager {
             while ((nextLine = reader.readNext()) != null) {
                 if (nextLine.length >= REQUIRED_COLUMNS) {
                     try {
-                        DocumentReference ref = new DocumentReference(nextLine[0], nextLine[2], nextLine[3],
-                                nextLine.length > REQUIRED_COLUMNS ? nextLine[4] : "",
-                                nextLine.length > REQUIRED_COLUMNS +1 ? nextLine[5] : "",
-                                findLocation(access, nextLine[0]),
-                                loadExtraColumns(nextLine));
-                        addRef(ref);
+                        DocumentReference.PathType pathtype = DocumentReference.stringToPathType(nextLine.length > REQUIRED_COLUMNS ? nextLine[4] : "");
+                        //                                            refPath,     title,       docPath,     pathType
+                        DocumentReference ref = new DocumentReference(nextLine[0], nextLine[2], nextLine[3], pathtype,
+                                nextLine.length > REQUIRED_COLUMNS +1 ? nextLine[5] : "",   // category
+                                findLocation(access, nextLine[0]),                          // location
+                                loadExtraColumns(nextLine));                                // extraColumns
+                        if (ref.getPathType() == DocumentReference.PathType.DIR) {
+                            addRef(getDocumentsInDir(ref));
+                        } else {
+                            addRef(ref);
+                        }
                     } catch (UnresolvableException ex) {
                         Logging.println("Error processing a row in docs.csv.  Unable to resolve the location '"+nextLine[0]+"'");
                     } catch (Throwable th) {
@@ -64,6 +71,35 @@ public enum DocumentManager {
                     }
                 }
             }
+        }
+
+        private List<DocumentReference> getDocumentsInDir(DocumentReference base) {
+            List<DocumentReference> result = new ArrayList<DocumentReference>();
+
+            File docBaseFile = AddOnFiles.getDocDirectory();
+            File dir = new File(docBaseFile, base.getDocPath());
+
+            File[] files = dir.listFiles();
+
+            for (File file : files) {
+                //                                            refPath,                 title,
+                DocumentReference ref = new DocumentReference(base.getReferencePath(), getBaseFileName(file),
+                //      docPath,         pathType
+                        getRelativePath(AddOnFiles.getDocDirectory(), file) , DocumentReference.PathType.DISCOVERED,
+                        base.getCategory(),     // category
+                        base.getLocation(),     // location
+                        base.getExtraColumns());// extraColumns
+                result.add(ref);
+
+            }
+            return result;
+        }
+
+        //todo commons-io should have something like this - replace when you can read javadocs (not on a plane)
+        private String getRelativePath(File base, File descendent) {
+            String basePath = base.getAbsolutePath();
+            String descPath = descendent.getAbsolutePath();
+            return descPath.substring(basePath.length());
         }
 
         private Map<String,String> loadExtraColumns(String[] line) {
@@ -121,6 +157,12 @@ public enum DocumentManager {
                 }
             }
             refList.add(ref);
+        }
+
+        private void addRef(List<DocumentReference> refs) {
+            for (DocumentReference ref : refs) {
+                addRef(ref);
+            }
         }
 
         private void clearConfiguration() {
@@ -219,14 +261,14 @@ public enum DocumentManager {
         return result;
     }
 
-    public List<DocumentReference> getReferences(final HttpServletRequest request) {
+    public DocumentList getReferences(final HttpServletRequest request) {
         try {
             SystemConnection connection = DirectAccess.getDirectAccess().getUserSystemConnection(request);
 
-            return connection.runReadAction(new ReadActionResult<List<DocumentReference>>() {
+            return connection.runReadAction(new ReadActionResult<DocumentList>() {
                 @Override
-                public List<DocumentReference> execute(@NotNull SystemAccess access) throws Exception {
-                    List<DocumentReference> result = Collections.emptyList();
+                public DocumentList execute(@NotNull SystemAccess access) throws Exception {
+                    DocumentList result = new DocumentList();
                     try {
                         if (WebContextFactory.hasLinkedWebContext(request)) {
                             WebContext context = WebContextFactory.getLinkedWebContext(request);
@@ -241,19 +283,33 @@ public enum DocumentManager {
             });
         } catch (Exception e) {
             Logging.println("Error getting document references", e);
-            return Collections.emptyList();
+            return new DocumentList();
+
         }
     }
 
-    private static List<DocumentReference> getReferencesForLocation(String locationString, HashMap<String,DocumentList> docRefs) {
-        List<DocumentReference> result = Collections.emptyList();
+    private static DocumentList getReferencesForLocation(String locationString, HashMap<String,DocumentList> docRefs) {
+        DocumentList result = new DocumentList();
 
-        List<DocumentReference> referenceList;
+        DocumentList referenceList;
         synchronized (docRefs) {
             referenceList = docRefs.get(locationString);
+            if (referenceList != null) {
+                for (DocumentReference reference : referenceList) {
+                    if (reference.getPathType() != DocumentReference.PathType.DIR) {
+                        result.add(reference);
+                    }
+                }
+            }
         }
-        if (referenceList != null) {
-            result = referenceList;
+        return result;
+    }
+
+    private static String getBaseFileName(File file) {
+        String result = file.getName();
+        int index = result.lastIndexOf('.');
+        if (index >= 0) {
+            result = result.substring(0,index);
         }
         return result;
     }

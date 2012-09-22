@@ -16,10 +16,12 @@ import java.util.Map;
  */
 public class DocumentReference
 {
+    public enum PathType { DOC, URL, DIR, DISCOVERED, OTHER};
+
     private String referencePath;
     private String title;
     private String docPath;
-    private String pathType;
+    private PathType pathType;
     private String category;
     private Location location;
     private Map<String,String> extraColumns;
@@ -28,8 +30,10 @@ public class DocumentReference
     // todo - field for specifying order of documents
     // todo - type and user specified columns
 
+    // todo - DIR link type
 
-    public DocumentReference(String referencePath, String title, String docPath, String pathType, String category, Location location, Map<String,String> extraColumns) {
+
+    public DocumentReference(String referencePath, String title, String docPath, PathType pathType, String category, Location location, Map<String,String> extraColumns) {
         this.referencePath = referencePath;
         this.title = title;
         this.docPath = docPath;
@@ -37,6 +41,16 @@ public class DocumentReference
         this.category = category;
         this.location = location;
         this.extraColumns = extraColumns;
+    }
+
+    public static PathType stringToPathType(String stringType) {
+        PathType result;
+        try {
+            result = PathType.valueOf(stringType.toUpperCase());
+        } catch (Exception e) {
+            result = PathType.OTHER;
+        }
+        return result;
     }
 
     public String getReferencePath() {
@@ -51,8 +65,16 @@ public class DocumentReference
         return docPath;
     }
 
+    public PathType getPathType() {
+        return pathType;
+    }
+
     public File getDocFile() {
-        return canonicalize(new File(AddOnFiles.getDocDirectory(), getDocPath()));
+        return canonicalize(new File(AddOnFiles.getDocDirectory(), getNormalizedDocPath()));
+    }
+
+    public Map<String, String> getExtraColumns() {
+        return extraColumns;
     }
 
     private File canonicalize(File file) {
@@ -63,15 +85,19 @@ public class DocumentReference
         }
     }
 
-    // returns true if path type is not DOC, or if it is DOC and getDocFile().exists()
+    // returns true for types who's existence can't be verified (like URLs or unknown types)
     public boolean checkDocExists() {
-        return !isPathTypeDoc() || getDocFile().exists();
+        boolean result = true;
+        if (pathType == PathType.DOC || pathType == PathType.DISCOVERED) {
+            result = getDocFile().exists();
+        }
+        return result;
     }
 
     public String getURL() {
-        if (isPathTypeDoc()) {
+        if (pathType == PathType.DOC || pathType == PathType.DISCOVERED) {
             try {
-                URI uri = new URI(null, null, "/" + AddOnInfoHelper.getAddonName() + "/content" + getNormalizedDocPath(), null);
+                URI uri = new URI(null, null, "/" + AddOnInfoHelper.getAddonName() + "/content" + getNormalizedDocPath(), "title="+getTitle(), null);
                 return uri.toString();
             } catch (URISyntaxException e) {
                 Logging.println("Error formatting document URI", e);
@@ -84,26 +110,12 @@ public class DocumentReference
         return location;
     }
 
-    public String getPathType() {
-        if (isPathTypeDoc()) { return "DOC"; }
-        else if (isPathTypeURL()) { return "URL"; }
-        else return pathType;
-    }
-
     public String getCategory() {
         if (category!=null && category.length()>0) {
             return category;
         } else {
             return "Uncategorized";
         }
-    }
-
-    private boolean isPathTypeDoc() {
-        return (pathType == null || pathType.length()==0 || pathType.equalsIgnoreCase("doc"));
-    }
-
-    private boolean isPathTypeURL() {
-        return (pathType != null && pathType.equalsIgnoreCase("url"));
     }
 
     private String getNormalizedDocPath() {
@@ -124,6 +136,8 @@ public class DocumentReference
                 return getCategory();
             } else if (columnName.equalsIgnoreCase("exists")) {
                 return checkDocExists();
+            } else if (columnName.equalsIgnoreCase("pathtype")) {
+                return getPathType();
             }
             else return "";  //todo - figure out a better way to handle errors - how does velocity handle exceptions?
         }

@@ -24,9 +24,13 @@ public class DocumentServlet extends HttpServlet {
             resp.sendError(404, "File "+docFile+" cannot be read");
             return;
         }
-        
         String mime = MimeManager.getMimeTypeForExtension(getExtension(docFile));
         resp.setContentType(mime);
+
+        String title = req.getParameter("title");
+        if (title != null) {
+            resp.setHeader("Content-Disposition","inline; filename=TEST");
+        }
 
         try {
             resp.setContentLength((int)docFile.length());

@@ -79,4 +79,19 @@ another/vav,"This is ignored",Title2,"path with a space",doc,type2,blue
            result2.get('Color') == 'blue'
            result2.URL == "/TEST/content/path%20with%20a%20space"
     }
+
+    def testGetBaseFileName() {
+        when:
+            def result = DocumentManager.   getBaseFileName(new File(path));
+        then:
+            result == expected
+        where:
+        path                    | expected
+        'Test.pdf'              | 'Test'                 // basic
+        'a/b/fred.txt'          | 'fred'                 // with directories
+        'a/b/this is a test.doc'| 'this is a test'       // with spaces
+        '.ignore'               | ''                     // leading .
+        'something.'            | 'something'            // trailing .
+        'this.is.a.test.doc'    | 'this.is.a.test'       // multiple .
+    }
 }
