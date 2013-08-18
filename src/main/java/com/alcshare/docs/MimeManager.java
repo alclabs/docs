@@ -39,14 +39,12 @@ public class MimeManager {
     }
 
     public static void initialize(ServletContext context) {
-        if (MIME_CONFIG == null) {
-            try {
-                MIME_CONFIG = new FileResource(new File(AddOnFiles.getConfigDirectory(), "mime.properties"),
-                    context.getResource("/WEB-INF/config/mime.properties"), true);
-                loadMimeTypes();
-            } catch (MalformedURLException e) {
-                Logging.println("Error getting default mime.properties", e);
-            }
+        try {
+            MIME_CONFIG = new FileResource(new File(AddOnFiles.getConfigDirectory(), "mime.properties"),
+                context.getResource("/WEB-INF/config/mime.properties"), true);
+            loadMimeTypes();
+        } catch (MalformedURLException e) {
+            Logging.println("Error getting default mime.properties", e);
         }
     }
 }

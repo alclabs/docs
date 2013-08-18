@@ -45,12 +45,19 @@
         <servlet-name>DocumentServlet</servlet-name>
         <servlet-class>com.alcshare.docs.servlets.DocumentServlet</servlet-class>
     </servlet>
-
     <servlet-mapping>
         <servlet-name>DocumentServlet</servlet-name>
         <url-pattern>/content/*</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>DocumentJSONServlet</servlet-name>
+        <servlet-class>com.alcshare.docs.servlets.DocumentJSONServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DocumentJSONServlet</servlet-name>
+        <url-pattern>/documents/*</url-pattern>
+    </servlet-mapping>
 
    <security-constraint>
       <web-resource-collection>

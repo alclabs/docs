@@ -45,10 +45,14 @@ public class DocumentReference
 
     public static PathType stringToPathType(String stringType) {
         PathType result;
-        try {
-            result = PathType.valueOf(stringType.toUpperCase());
-        } catch (Exception e) {
-            result = PathType.OTHER;
+        if (stringType.length() == 0) {
+            result = PathType.DOC;
+        } else {
+            try {
+                result = PathType.valueOf(stringType.toUpperCase());
+            } catch (Exception e) {
+                result = PathType.OTHER;
+            }
         }
         return result;
     }
@@ -142,6 +146,10 @@ public class DocumentReference
             else return "";  //todo - figure out a better way to handle errors - how does velocity handle exceptions?
         }
         return columnValue;
+    }
+
+    public String toString() {
+        return getReferencePath() +", "+getTitle()+", "+getDocPath()+", "+getPathType();
     }
 
 }

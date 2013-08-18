@@ -27,6 +27,17 @@ public class Startup implements ServletContextListener
     @Override
     public void contextInitialized(ServletContextEvent sce)
     {
+        ServletContext context = sce.getServletContext();
+        reInitialize(context);
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce)
+    {
+
+    }
+
+    public static void reInitialize(ServletContext context) {
         File configFile = new File(AddOnFiles.getConfigDirectory(), CONFIG_NAME);
 
         if (!configFile.exists())  // write config file if needed
@@ -38,10 +49,10 @@ public class Startup implements ServletContextListener
             Logging.println("Created new configuration file in "+sw);
         }
 
-        MimeManager.initialize(sce.getServletContext());    // create and load mime types
-        TemplateManager.initialize(sce.getServletContext());// copy default templates if needed
+        MimeManager.initialize(context);    // create and load mime types
+        TemplateManager.initialize(context);// copy default templates if needed
 
-        initWebResources(sce.getServletContext());
+        initWebResources(context);
 
         if (configFile.exists()) {
             try {
@@ -56,13 +67,7 @@ public class Startup implements ServletContextListener
         AddOnFiles.getDocDirectory();  // just to make sure the directory exists
     }
 
-    @Override
-    public void contextDestroyed(ServletContextEvent sce)
-    {
-
-    }
-
-    private void initWebResources(ServletContext context) {
+    private static void initWebResources(ServletContext context) {
         Collection<FileResource> imgFiles = FileResource.getFileResourcesBeneathContextPath(context,
                 "/WEB-INF/content/img", AddOnFiles.getImageDirectory(), false);
         Collection<FileResource> jsFiles = FileResource.getFileResourcesBeneathContextPath(context,

@@ -1,0 +1,40 @@
+body {
+    height:100%;
+}
+
+#page {
+    height:100%;
+}
+
+#tabs {
+    height:100%
+}
+
+#manage-tab {
+    height: 100%;
+    overflow: auto;
+}
+#buttons {
+    padding-bottom: 20px;
+}
+
+table {
+    border-collapse:collapse;
+}
+
+#missing-tab td {
+    padding: 0px 8px 0px 8px;
+    border-width: 0;
+}
+
+#missing-tab tr:nth-child(even) {
+    background-color: #F0F0F0;
+}
+
+.help {
+    float:right;
+}
+
+.help.ui-button-icon-only {
+    width: 1em;
+}

@@ -29,7 +29,16 @@ public enum DocumentManager {
         loadConfigurationInternal(new FileReader(configFile), connection);
     }
 
+    public DocumentList getAllDocuments() {
+        DocumentList result = new DocumentList();
+        for (DocumentList documentList : docRefs.values()) {
+            result.addAll(documentList);
+        }
+        return result;
+    }
+
     private void loadConfigurationInternal(Reader configReader, SystemConnection connection) throws IOException, SystemException, ActionExecutionException {
+        docRefs.clear();
         connection.runReadAction(new LoadConfigurationAction(configReader, docRefs));
     }
 
@@ -51,7 +60,7 @@ public enum DocumentManager {
             clearConfiguration();
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
-                if (nextLine.length >= REQUIRED_COLUMNS) {
+                if (shouldProcess(nextLine)) {
                     try {
                         DocumentReference.PathType pathtype = DocumentReference.stringToPathType(nextLine.length > REQUIRED_COLUMNS ? nextLine[4] : "");
                         //                                            refPath,     title,       docPath,     pathType
@@ -71,6 +80,20 @@ public enum DocumentManager {
                     }
                 }
             }
+        }
+
+        private boolean shouldProcess(String[] next) {
+            if (next.length < REQUIRED_COLUMNS) {
+                return false;
+            }
+
+            for (int i=0; i<REQUIRED_COLUMNS; i++) {
+                String s= next[i];
+                if (s == null || s.length()==0) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private List<DocumentReference> getDocumentsInDir(DocumentReference base) {
@@ -96,6 +119,7 @@ public enum DocumentManager {
         }
 
         //todo commons-io should have something like this - replace when you can read javadocs (not on a plane)
+        //todo - could use URI.relativize
         private String getRelativePath(File base, File descendent) {
             String basePath = base.getAbsolutePath();
             String descPath = descendent.getAbsolutePath();

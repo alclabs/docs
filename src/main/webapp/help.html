@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Docs Help</title>
+    <link rel="stylesheet" type="text/css" href="help/css/contentstyle.css"/>
+</head>
+<body>
+<img src="help/img/documents_100.png" style="float:left; padding-right:15px;">
+<h1>Docs - the Documentation Add-On</h1>
+<p>This add-on is intended to provide a simple mechanism to manage and display the documentation associated with
+a WebCTRL system.  There are numerous as-builts, network diagrams, and other documents that are associated with
+WebCTRL locations, but are awkward to attach as graphics.  This add-on provides a simple way to include
+a large number of documents in a system and associate different documents with different locations in WebCTRL
+without requiring custom view files for each location.</p>
+
+<h2 style="clear:left;">Prerequisites</h2>
+<p>
+    This add-on works with WebCTRL 5.5 or later.
+    It also requires the Enterprise Integration optional package on your license.
+</p>
+
+<h2>Status:</h2>
+<p>This is a very early version of this add-on which, while functional, is really intended to get some real
+world feedback about the features needed to manage documents in a WebCTRL system.  It currently has no user
+interface and both the documents and their mapping to WebCTRL locations must be managed by manipulating files
+on the WebCTRL server.  If you do not have direct access to the file system of the WebCTRL server, we suggest
+that you use WebDAV to get access.  See WebCTRL help for more details.</p>
+
+<h2>Usage</h2>
+<img style="float:right;padding-left:2em;" src="help/img/vb_control.png"/>
+<p>
+    You display the documents associated with a location in WebCTRL using ViewBuilder's WebApp Content control.
+    Make the size of the control large enough to contain the longest list of documents you may wish to display.  The
+    exact format of the displayed content depends on the style parameter associated with the control.  If no style
+    is specified, the content is just a simple list of links to the associated documentation.  If you want to
+    format the content differently, you may create your own style templates (more on this later) and specify the
+    style to use with the "style" parameter as shown below.
+</p>
+<img style="float:left;padding-right:2em;" src="help/img/vb_properties.png"/>
+<p style="clear:both;">&nbsp;</p>
+<h2>Configuration</h2>
+<p>The <strong>docs</strong> add-on configuration and the documents to display are all contained inside your system
+    directory at <span class="examp"><span class="ital">system</span>/webapp_data/docs/private/</span>.  This directory
+    will be created when the add-on is first enabled.  This directory will have 3 important subdirectores:
+</p>
+<ul>
+    <li class="examp">config</li>
+    <li class="examp">content</li>
+    <li class="examp">templates</li>
+</ul>
+<div class="indent">
+    <h3>config</h3>
+    <p>
+        The private/config directory contains the files that configure the add-on.  The most important of these is
+        <span class="examp">docs.csv</span>.  This is the file that enumerates the documents and the locations
+        where they are attached. It is a simple text file of comma separated values.  This file should be easy to
+        edit with a spreadsheet program like Excel. If this file does not exist when the add-on is started, a
+        starting file with only values for Reference Path and Display Path will be created.
+    </p>
+    <p>
+        The first row must contain the column names and the first six columns must be named
+        &quot;<span class="examp">Reference Path,Display Path,Title,Document Path,Path Type,Category</span>&quot;.
+        You may add extra columns with your own unique information. An example docs.csv file is shown below.
+    </p>
+    <pre>Reference Path,Display Path,Title,Document Path,Path Type,Category
+#first_floor/main_conference_room,&quot;/Campus/Green Bldg/First Floor/Main Conference Room&quot;,&quot;As Built&quot;,ab/mcr_asbuilt.pdf,DOC,As Built
+#first_floor/main_conference_room,&quot;/Campus/Green Bldg/First Floor/Main Conference Room&quot;,&quot;Parts List&quot;,list/mcr_parts_list.txt,DOC,BOM
+#ahu_1,&quot;/Campus/Green Bldg/East Wing/AHU 1&quot;,&quot;As Built&quot;,ab/ahu1_asbuilt.pdf</pre>
+    <div class="indent">
+        <h4>Reference Path</h4>
+        <p>
+            The reference path column is the reference name path (sometimes called GQL path) to the location where
+            the documents are to be attached.  You can get this path by right-clicking on a location in the WebCTRL
+            tree and picking &quot;Copy path&quot;.  You can also get the path from the &quot;whereami&quot; manual command.
+        </p>
+
+        <h4>Display Path</h4>
+        <p>
+            The display path column contains a path constructed from the hierarchy of display names.
+            It is not used when the configuration is read in, but is written out in the
+            default file to help identify the location of the row.
+        </p>
+
+        <h4>Title</h4>
+        <p>
+            The title column contains the text that you wish to use when referring to the document.
+        </p>
+
+        <h4>Document Path</h4>
+        <p>
+            The document path column defines a path to the document referenced by this row.  See the &quot;Path Type&quot;
+            column for more information.
+        </p>
+
+        <h4>Path Type - (optional)</h4>
+        <p>
+            This column defines the type of document path that is provided in the previous column.
+            Possible values:
+            <ul>
+                <li>DOC (default if blank)- document path is interpreted as a relative path in the file system from the content
+                directory to the document of interest (with forward slashes (/) between directories).</li>
+                <li>URL - document path is a URL to another web page.</li>
+                <li>DIR - document path is a relative path in the file system from the content directory to a subdirectory.
+                All the files in this directory will be listed.  The title will be the file name without the extension.</li>
+            </ul>
+        </p>
+
+        <h4>Category - (optional)</h4>
+        <p>
+            This column is optional, but may be used to specify a user defined category for the document.  This
+            category is used by the <span class="examp">group.vm</span> style template to group documents by category.
+        </p>
+
+        <h4>Extra Columns - (optional)</h4>
+        <p>
+            You can add your own custom columns here. The names you use for the column headers can be used to reference
+            it from a custom template.
+        </p>
+    </div>
+    <p>Note that you should use multiple rows with the same Reference Path to attach multiple document files to
+    the same location.</p>
+
+    <p>
+        This directory also contains the file <span class="examp">mime.properties</span>.  The default version of this file is created when
+        the add-on is first started.  It contains the MIME type mappings to filename extensions. The MIME type
+        determines how a browser treats the content that is sent to it.  The default file contains mappings for
+        many typical document types, but it may be extended if necessary.
+    </p>
+
+    <h3>content</h3>
+    <p>The private/content directory contains the documentation files that this add-on will provide links to.</p>
+
+    <h3>templates</h3>
+    <p>
+        The private/templates directory contains the formatting templates used to render the add-on content
+        in the WebApp Content control on a graphic page.  By default, the add-on uses &quot;default.vm&quot;
+        which just provides a list of plain links.  Another template, &quot;collapse.vm&quot; is also provided
+        which initially collapses the list of links and expands when the heading is clicked.  To use the collapse
+        template, add a style parameter to the ViewBuilder WebApp Content control with a value of &quot;collapse.vm&quot;.
+        Theres is one more standard template, &quot;group.vm&quot;, that will group documents by the values in the
+        Category column.
+    </p>
+    <p>
+        These are "Velocity Templates". You may modify one of the standard templates, or copy it as a starting place.
+        If you delete one of the standard templates, it will be recreated when the add-on is started again.
+        There is a great deal more information on formatting Velocity Templates
+        <a target="_blank" href="http://velocity.apache.org/engine/releases/velocity-1.7/user-guide.html">on the Velocity project site</a>.
+        The docs add-on provides a few basic variables to get to important information.  The <span class="examp">$documents</span>
+        variable provides a list of attached documents for the current location.  The <span class="examp">$addonName</span>
+        variable provides the name of the current add-on (which may be needed when formatting some URLs).
+    </p>
+    <p>
+        An example template that demonstrates some basic features of the templating language is shown below:
+    </p>
+    <pre>&lt;style type="text/css">
+    .links {padding-left: 15px;}
+&lt;/style>
+#if ($documents.isEmpty())
+    &lt;div>No Documentation&lt;/div>
+#else
+    &lt;div>Documentation:&lt;/div>
+    &lt;div class="links">
+    #foreach( $doc in $documents )
+        &lt;div>&lt;a target="_blank" href="$doc.DocURL">$doc.Title&lt;/a>&lt;/div>
+    #end
+    &lt;/div>
+#end
+</pre>
+    <p>
+        Each document contained in the list of $documents ($doc in the above example), contains fields
+        related to the columns in the docs.csv file.  The title is available as $doc.Title.  The relative path to the
+        document is not very useful directly, but a URL that can serve us that file is available as $doc.DocURL.
+        If you added custom columns to your docs.csv file, you may refer to the content of that column
+        using the header name.  For example, if you added a column with a header of &quot;type&quot;, then
+        you could refer to the value in that column with <span class="examp">$doc.type</span>
+    </p>
+    <p>
+        The following properties (case insensitive) are available on each $doc:
+        <ul>
+            <li>title - the title to be displayed for the document link</li>
+            <li>url - the URL used to display the document</li>
+            <li>referencePath - the value of the Reference Path column</li>
+            <li>category - the value of the Category column</li>
+            <li>exists - &quot;true&quot; if the document exists, &quot;false&quot; otherwise</li>
+        </ul>
+        The values in any extra user added columns may be retrieved by using the column header name as
+        the property.  If the name has a space in it, you should wrap the property reference in curly
+        brackets like &quot;${my column}&quot;.
+    </p>
+    <p>
+        If you create your own template, place the file in the templates directory and refer to it using the
+        style parameter in the WebApp Content control.
+    </p>
+</div>
+<p>Currently all of this configuration information is only read when the add-on starts, so if you change any of the
+configuration files, you must either re-start WebCTRL or disable and then re-enable the add-on on the
+management page under the config tree.</p>
+</body>
+</html>

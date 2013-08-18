@@ -8,7 +8,7 @@ apply from: configurations.gradleScript.resolve().iterator().next()
 info {
   name = 'Docs'
   description = 'Documentation Manager'
-  version = 'Beta 1'// + new Date().format('yyyy/MM/dd kk:mm:ss')
+  version = 'Beta 2-' + new Date().format('yyyy/MM/dd kk:mm:ss')
   vendor = 'ALC Labs'
 }
 
@@ -16,6 +16,7 @@ dependencies {
    compile 'net.sf.opencsv:opencsv:2.0'
    compile 'commons-io:commons-io:2.4'
    compile 'org.apache.velocity:velocity:1.7'
+   compile 'org.json:json:20090211'
 
    providedCompile 'com.controlj.green:addonsupport-api-addon:1.2.0'
    providedCompile 'com.controlj.green:directaccess-api-addon:1.2.0'
