@@ -4,6 +4,7 @@ body {
 
 #page {
     height:100%;
+    margin-top:1em;
 }
 
 #tabs {
@@ -15,7 +16,16 @@ body {
     overflow: auto;
 }
 #buttons {
-    padding-bottom: 20px;
+    padding-top: 10px;
+}
+
+#buttons button {
+    margin-right: 20px;
+    border-radius: 8px;
+}
+
+#stats-container {
+    margin-top:20px;
 }
 
 table {

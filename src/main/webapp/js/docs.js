@@ -1,5 +1,1 @@
-$(function() {
-   new docs.DocsView();
-
-
-});
+var docsModule = angular.module('docs', ['ui.bootstrap']);

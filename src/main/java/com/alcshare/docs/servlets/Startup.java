@@ -6,7 +6,6 @@ import com.alcshare.docs.templates.TemplateManager;
 import com.alcshare.docs.util.AddOnFiles;
 import com.alcshare.docs.util.FileResource;
 import com.alcshare.docs.util.Logging;
-import com.sun.xml.internal.ws.wsdl.writer.document.http.Address;
 import org.apache.commons.lang.time.StopWatch;
 
 import javax.servlet.ServletContext;
@@ -14,9 +13,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Collection;
-import java.util.Set;
 
 /**
  *

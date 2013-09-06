@@ -3,6 +3,7 @@ package com.alcshare.docs.servlets;
 import com.alcshare.docs.DocumentList;
 import com.alcshare.docs.DocumentManager;
 import com.alcshare.docs.DocumentReference;
+import com.alcshare.docs.util.Logging;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,8 +42,11 @@ public class DocumentJSONServlet extends HttpServlet {
         }
 
         try {
+            JSONObject results = new JSONObject();
+
             if (pathInfo == null) { // no extra path info, must be a request for a refresh
-                JSONArray results = new JSONArray();
+                JSONArray missingList = new JSONArray();
+                JSONArray foundList = new JSONArray();
 
                 /*
                 // make fake list for testing
@@ -60,16 +64,26 @@ public class DocumentJSONServlet extends HttpServlet {
                     next.put("title", doc.getTitle());
                     next.put("docPath", doc.getDocPath());
                     next.put("pathType", doc.getPathType().toString());
-                    next.put("category", doc.getCategory());
-                    next.put("checkDocExists", doc.checkDocExists());
-
-                    results.put(next);
+                    //next.put("category", doc.getCategory());
+                    //next.put("checkDocExists", doc.checkDocExists());
+                    if (doc.checkDocExists()) {
+                        foundList.put(next);
+                    } else {
+                        missingList.put(next);
+                    }
                 }
+                results.put("missingDocs", missingList);
+                results.put("foundDocs", foundList);
+
+
+                results.put("total", docs.size());
+
 
                 results.write(response.getWriter());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logging.println("Unexpected exception while getting document list", e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 }
