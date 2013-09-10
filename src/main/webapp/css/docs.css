@@ -5,23 +5,35 @@ body {
 #page {
     height:100%;
     margin-top:1em;
+    margin-left:10px;
 }
 
 #tabs {
     height:100%
 }
 
-#manage-tab {
-    height: 100%;
-    overflow: auto;
-}
-#buttons {
-    padding-top: 10px;
+.scrollcontent {
+    overflow:auto;
 }
 
-#buttons button {
+#header {
+    padding-top: 10px;
+    padding-left:10px;
+}
+
+#header button {
     margin-right: 20px;
     border-radius: 8px;
+    background-color: #EEE;
+}
+
+#header button:hover {
+    background-color:#BBB;
+}
+
+#header img {
+    float:right;
+    padding-right: 10px;
 }
 
 #stats-container {
@@ -32,12 +44,17 @@ table {
     border-collapse:collapse;
 }
 
-#missing-tab td {
+td {
     padding: 0px 8px 0px 8px;
     border-width: 0;
+    min-width: 4em;
 }
 
-#missing-tab tr:nth-child(even) {
+th {
+    min-width: 8em;
+}
+
+tr:nth-child(even) {
     background-color: #F0F0F0;
 }
 

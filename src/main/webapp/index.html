@@ -30,28 +30,13 @@
     </script>
 </head>
 <body ng-controller="StatsCtrl">
+<div id="header">
+    <button ng-click="getData(true)">Reload Configuration on Server</button>
+    <a href="help/help.html" target="_blank"><img src="img/question-icon.png"></a>
+</div>
 <tabset id="page">
-    <tab heading="Manage">
-        <div id="buttons">
-            <button ng-click="getData(true)">Reload Configuration on Server</button>
-            <button>Upload Configuration to Server</button>
-            <button>Download Configuration to Server</button>
-        </div>
-        <div id="stats-container" >
-            <table>
-                <tr>
-                    <td>Total Document Links:</td>
-                    <td ng-bind="total"></td>
-                </tr>
-                <tr>
-                    <td>Links with Missing Documents:</td>
-                    <td ng-bind="missingDocs.length"></td>
-                </tr>
-            </table>
-        </div>
-    </tab>
     <tab heading="Good Documents">
-        <div>
+        <div class="scrollcontent">
             <table>
                 <thead>
                 <tr>
@@ -73,7 +58,7 @@
         </div>
     </tab>
     <tab heading="Missing Documents">
-        <div>
+        <div class="scrollcontent">
             <table>
                 <thead>
                 <tr>

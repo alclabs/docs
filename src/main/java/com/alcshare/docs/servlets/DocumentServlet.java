@@ -29,7 +29,7 @@ public class DocumentServlet extends HttpServlet {
 
         String title = req.getParameter("title");
         if (title != null) {
-            resp.setHeader("Content-Disposition","inline; filename=TEST");
+            resp.setHeader("Content-Disposition","INLINE; FILENAME=\""+title+"\"");
         }
 
         try {
