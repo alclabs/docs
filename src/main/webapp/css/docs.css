@@ -65,3 +65,7 @@ tr:nth-child(even) {
 .help.ui-button-icon-only {
     width: 1em;
 }
+
+.hidden {
+    display:none;
+}

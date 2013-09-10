@@ -20,8 +20,8 @@ without requiring custom view files for each location.</p>
     It also requires the Enterprise Integration optional package on your license.
 </p>
 
-<h2>Status:</h2>
-<p>This is a very early version of this add-on which, while functional, is really intended to get some real
+<h2>Status</h2>
+<p>This is an early version of this add-on which, while functional, is really intended to get some real
 world feedback about the features needed to manage documents in a WebCTRL system.  It has a very simplistic
 user interface and both the documents and their mapping to WebCTRL locations must be managed by manipulating files
 on the WebCTRL server.  If you do not have direct access to the file system of the WebCTRL server, we suggest
@@ -34,8 +34,9 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
     Make the size of the control large enough to contain the longest list of documents you may wish to display.  The
     exact format of the displayed content depends on the style parameter associated with the control.  If no style
     is specified, the content is just a simple list of links to the associated documentation.  If you want to
-    format the content differently, you may create your own style templates (more on this later) and specify the
-    style to use with the "style" parameter as shown below.
+    format the content differently, you may create your own style templates (more on this later) or use one of the 3
+    standard templates: <span class="examp">default.vm</span>, <span class="examp">collapse.vm</span>,
+    or <span class="examp">group.fm</span>. Specify the template to use with the "style" parameter as shown below.
 </p>
 <img style="float:left;padding-right:2em;" src="img/vb_properties.png"/>
 <p style="clear:both;">&nbsp;</p>
@@ -53,7 +54,7 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
     <h3>config</h3>
     <p>
         The private/config directory contains the files that configure the add-on.  The most important of these is
-        <span class="examp">docs.csv</span>.  This is the file that enumerates the documents and the locations
+        <span class="examp bold">docs.csv</span>.  This is the file that enumerates the documents and the locations
         where they are attached. It is a simple text file of comma separated values.  This file should be easy to
         edit with a spreadsheet program like Excel. If this file does not exist when the add-on is started, a
         starting file with only values for Reference Path and Display Path will be created.
@@ -122,7 +123,7 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
     the same location.</p>
 
     <p>
-        This directory also contains the file <span class="examp">mime.properties</span>.  The default version of this file is created when
+        This directory also contains the file <span class="examp bold">mime.properties</span>.  The default version of this file is created when
         the add-on is first started.  It contains the MIME type mappings to filename extensions. The MIME type
         determines how a browser treats the content that is sent to it.  The default file contains mappings for
         many typical document types, but it may be extended if necessary.
@@ -134,11 +135,11 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
     <h3>templates</h3>
     <p>
         The private/templates directory contains the formatting templates used to render the add-on content
-        in the WebApp Content control on a graphic page.  By default, the add-on uses &quot;default.vm&quot;
-        which just provides a list of plain links.  Another template, &quot;collapse.vm&quot; is also provided
+        in the WebApp Content control on a graphic page.  By default, the add-on uses &quot;<span class="bold">default.vm</span>&quot;
+        which just provides a list of plain links.  Another template, &quot;<span class="bold">collapse.vm</span>&quot; is also provided
         which initially collapses the list of links and expands when the heading is clicked.  To use the collapse
         template, add a style parameter to the ViewBuilder WebApp Content control with a value of &quot;collapse.vm&quot;.
-        Theres is one more standard template, &quot;group.vm&quot;, that will group documents by the values in the
+        Theres is one more standard template, &quot;<span class="bold">group.vm</span>&quot;, that will group documents by the values in the
         Category column.
     </p>
     <p>
@@ -194,7 +195,15 @@ that you use WebDAV to get access.  See WebCTRL help for more details.</p>
     </p>
 </div>
 <p>Currently all of this configuration information is read when the add-on starts or when you press the
-    &quot;Reload Configuration on Server&quot; button.  If you change any of the
+    &quot;Reload Configuration on Server&quot; button (see below).  If you change any of the
 configuration files, you must press this button before your changes will apply.</p>
+
+<h2>Management</h2>
+<p>
+    A very simple management page is available at http://&lt;webctrl-server-name&gt;/docs.  Most importantly, it provides
+    a &quot;Reload Configuration on Server&quot; button to load any changes in the configuration files.  It also provides
+    tabs which list all the properly configured documents and any documents that are missing on the server.
+</p>
+<img src="img/management.png">
 </body>
 </html>

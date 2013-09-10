@@ -90,6 +90,10 @@ th {
    font-style:italic;
 }
 
+.bold {
+    font-weight: bold;
+}
+
 .nav {
    padding-top:1em;
 }

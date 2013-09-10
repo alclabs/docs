@@ -59,7 +59,10 @@
     </tab>
     <tab heading="Missing Documents">
         <div class="scrollcontent">
-            <table>
+            <div ng-show="missingDocs.length == 0">
+                No documents are missing.
+            </div>
+            <table ng-show="missingDocs.length > 0">
                 <thead>
                 <tr>
                     <th>Reference Path</th>
