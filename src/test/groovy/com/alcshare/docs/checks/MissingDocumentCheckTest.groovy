@@ -23,7 +23,7 @@ public class MissingDocumentCheckTest extends Specification
          def check = new MissingDocumentCheck()
 
       when:
-         def result = check.performCheckOnRef(new DocumentReference("#foo/bar", "", "/not/a/real/path", "", "",  Mock(Location), [:]))
+         def result = check.performCheckOnRef(new DocumentReference("#foo/bar", "", "/not/a/real/path", DocumentReference.PathType.DOC, "",  Mock(Location), [:]))
       then:
          result.gqlPath == "#foo/bar"
          result.docPath == "/not/a/real/path"
@@ -47,7 +47,7 @@ public class MissingDocumentCheckTest extends Specification
          def check = new MissingDocumentCheck()
 
       when:
-         def result = check.performCheckOnRef(new DocumentReference("#foo/bar", "", "myfile.txt", "", "", Mock(Location), [:]))
+         def result = check.performCheckOnRef(new DocumentReference("#foo/bar", "", "myfile.txt", DocumentReference.PathType.DOC, "", Mock(Location), [:]))
       then:
          result == null
 
@@ -63,8 +63,8 @@ public class MissingDocumentCheckTest extends Specification
          def check = new MissingDocumentCheck()
 
       when: "a list of document references is given"
-         def results = check.performCheckOnList([new DocumentReference("#foo/bar", "", "/not/a/real/path", "","", Mock(Location), [:]),
-                                                 new DocumentReference("#foo/baz", "", "/also/not/a/real/path", "", "", Mock(Location), [:]),
+         def results = check.performCheckOnList([new DocumentReference("#foo/bar", "", "/not/a/real/path", DocumentReference.PathType.DOC,"", Mock(Location), [:]),
+                                                 new DocumentReference("#foo/baz", "", "/also/not/a/real/path", DocumentReference.PathType.DOC, "", Mock(Location), [:]),
                                                 ])
       then: "results for a list should be returned"
          results*.gqlPath == ["#foo/bar", "#foo/baz"]

@@ -38,7 +38,7 @@ Reference Path,Display Path,Title,Document Path,Path Type,Category
            result.docPath == "one/two/three"
            result.getReferencePath() == "#ahu1"
            result.title == "This is a test"
-           result.URL == "/TEST/content/one/two/three"
+           result.URL == "/TEST/content/one/two/three?title=This%20is%20a%20test"
     }
 
     def testCustomColumn() {
@@ -69,7 +69,7 @@ another/vav,"This is ignored",Title2,"path with a space",doc,type2,blue
            result1.docPath == "/one/two/three"
            result1.get('Category') == 'type1'
            result1.get('Color') == 'red'
-           result1.URL == "/TEST/content/one/two/three"
+           result1.URL == "/TEST/content/one/two/three?title=This%20is%20a%20test"
 
 
            result2.referencePath == "another/vav"
@@ -77,7 +77,7 @@ another/vav,"This is ignored",Title2,"path with a space",doc,type2,blue
            result2.docPath == "path with a space"
            result2.get('Category') == 'type2'
            result2.get('Color') == 'blue'
-           result2.URL == "/TEST/content/path%20with%20a%20space"
+           result2.URL == "/TEST/content/path%20with%20a%20space?title=Title2"
     }
 
     def testGetBaseFileName() {
