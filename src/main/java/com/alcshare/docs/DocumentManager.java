@@ -118,12 +118,8 @@ public enum DocumentManager {
             return result;
         }
 
-        //todo commons-io should have something like this - replace when you can read javadocs (not on a plane)
-        //todo - could use URI.relativize
         private String getRelativePath(File base, File descendent) {
-            String basePath = base.getAbsolutePath();
-            String descPath = descendent.getAbsolutePath();
-            return descPath.substring(basePath.length());
+            return "/" + base.toURI().relativize(descendent.toURI()).getPath();
         }
 
         private Map<String,String> loadExtraColumns(String[] line) {
