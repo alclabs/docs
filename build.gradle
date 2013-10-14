@@ -8,7 +8,7 @@ apply from: configurations.gradleScript.resolve().iterator().next()
 info {
   name = 'Docs'
   description = 'Documentation Manager'
-  version = 'Beta 2.1'// + new Date().format('yyyy/MM/dd kk:mm:ss')
+  version = 'Beta 2.2'// + new Date().format('yyyy/MM/dd kk:mm:ss')
   vendor = 'ALC Labs'
 }
 
